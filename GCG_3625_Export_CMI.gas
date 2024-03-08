@@ -1,0 +1,1746 @@
+Program.Sub.ScreenSU.Start
+gui.Form1..create
+gui.Form1..caption("Export to ATS")
+gui.Form1..size(2955,2025)
+gui.Form1..minx(0)
+gui.Form1..miny(0)
+gui.Form1..position(0,0)
+gui.Form1..event(unload,form1_unload)
+gui.Form1..alwaysontop(False)
+gui.Form1..fontname("Arial")
+gui.Form1..fontsize(8)
+gui.Form1..forecolor(0)
+gui.Form1..fontstyle(,,,,)
+gui.Form1..BackColor(-2147483633)
+gui.Form1..controlbox(True)
+gui.Form1..maxbutton(False)
+gui.Form1..minbutton(False)
+gui.Form1..mousepointer(0)
+gui.Form1..moveable(True)
+gui.Form1..sizeable(False)
+gui.Form1..ShowInTaskBar(True)
+gui.Form1..titlebar(True)
+gui.Form1.cmd1.create(button)
+gui.Form1.cmd1.caption("Export")
+gui.Form1.cmd1.visible(True)
+gui.Form1.cmd1.size(855,375)
+gui.Form1.cmd1.zorder(0)
+gui.Form1.cmd1.position(180,980)
+gui.Form1.cmd1.enabled(True)
+gui.Form1.cmd1.fontname("Arial")
+gui.Form1.cmd1.fontsize(8)
+gui.Form1.cmd1.event(click,cmd1_click)
+gui.Form1.cmd1.defaultvalue("")
+gui.Form1.cmd1.controlgroup(0)
+gui.Form1.dropdownlist1.create(dropdownlist)
+gui.Form1.dropdownlist1.visible(True)
+gui.Form1.dropdownlist1.size(2385,330)
+gui.Form1.dropdownlist1.zorder(0)
+gui.Form1.dropdownlist1.position(165,400)
+gui.Form1.dropdownlist1.enabled(True)
+gui.Form1.dropdownlist1.fontname("Arial")
+gui.Form1.dropdownlist1.fontsize(8)
+gui.Form1.dropdownlist1.defaultvalue("")
+gui.Form1.dropdownlist1.controlgroup(0)
+gui.Form1.lbl1.create(label,"Select an Export Category:",True,1935,255,1,200,200,True,0,Arial,8,-2147483633,0)
+gui.Form1.lbl1.defaultvalue("")
+gui.Form1.lbl1.controlgroup(0)
+
+
+Program.Sub.ScreenSU.End
+
+Program.Sub.Preflight.Start
+
+Variable.UDT.uINV.Define("PART",String,PART)
+Variable.UDT.uINV.Define("LOCATION",String,LOCATION)
+Variable.UDT.uINV.Define("DESCRIPTION",String,DESCRIPTION)
+Variable.UDT.uINV.Define("REV",String,REV)
+Variable.UDT.uINV.Define("PRODUCT_LINE",String,PRODUCT_LINE)
+Variable.UDT.uINV.Define("CODE_SORT",String,CODE_SORT)
+Variable.UDT.uINV.Define("QTY_ONHAND",Float,QTY_ONHAND)
+Variable.UDT.uINV.Define("AMT_COST",Float,AMT_COST)
+Variable.UDT.uINV.Define("SALES_ACCOUNT",String)
+Variable.UDT.uINV.Define("TEXT_INFO1",String)
+Variable.UDT.uINV.Define("DATE_LAST_CHG",String)
+Variable.UDT.uINV.Define("TIME_LAST_CHG",String)
+Variable.uGlobal.uINV.Declare("uINV")
+Variable.UDT.uBOM.Define("REV",String,REV)
+Variable.UDT.uBOM.Define("SEQUENCE_BOM",String,SEQUENCE_BOM)
+
+Variable.UDT.uBOM.Define("PART",String,PART)
+Variable.UDT.uBOM.Define("QUANTITY",Float,QUANTITY)
+Variable.UDT.uBOM.Define("TIME_LAST_CHG",String)
+Variable.UDT.uBOM.Define("DATE_LAST_CHG",String)
+Variable.UDT.uBOM.Define("PARENT",String,PARENT)
+Variable.uGlobal.uBOM.Declare("uBOM")
+Variable.UDT.uSO.Define("ORDER_NO",String,ORDER_NO)
+Variable.UDT.uSO.Define("CUSTOMER",String,CUSTOMER)
+Variable.UDT.uSO.Define("CUSTOMER_PO",String,CUSTOMER_PO)
+Variable.UDT.uSO.Define("DATE_ORDER",String,DATE_ORDER)
+Variable.UDT.uSO.Define("DATE_DUE",String,DATE_DUE)
+Variable.UDT.uSO.Define("TEXT",String)
+Variable.UDT.uSO.Define("STANDING",String)
+Variable.UDT.uSO.Define("ADDRESS_1_SHIP",String)
+Variable.UDT.uSO.Define("ADDRESS_2_SHIP",String)
+Variable.UDT.uSO.Define("CITY_SHIP",String)
+Variable.UDT.uSO.Define("STATE_SHIP",String)
+Variable.UDT.uSO.Define("CODE_ZIP_SHIP",String)
+Variable.UDT.uSO.Define("SHIP_VIA",String,SHIP_VIA)
+Variable.UDT.uSO.Define("ORIGINAL_DUE_DATE",String,ORIGINAL_DUE_DATE)
+Variable.UDT.uSO.Define("RECORD_NO",String,RECORD_NO)
+Variable.UDT.uSO.Define("NAME_CUSTOMER",String)
+Variable.UDT.uSO.Define("TIME_LAST_CHG",String)
+Variable.UDT.uSO.Define("DATE_LAST_CHG",String)
+Variable.uGlobal.uSO.Declare("uSO")
+Variable.UDT.uWO.Define("JOBSUFFIX",String,JOBSUFFIX)
+Variable.UDT.uWO.Define("PRIORITY",String)
+Variable.UDT.uWO.Define("STATUS",String)
+Variable.UDT.uWO.Define("SPECIAL_INSTRUCTIONS",String)
+Variable.UDT.uWO.Define("OPEN_QTY",Float)
+Variable.UDT.uWO.Define("ORDER_LINE",String)
+Variable.UDT.uWO.Define("ORDER_NO",String)
+Variable.UDT.uWO.Define("PART",String)
+Variable.UDT.uWO.Define("UNIT_COST",Float)
+Variable.UDT.uWO.Define("DATE_DUE",String)
+Variable.UDT.uWO.Define("DATE_OPENED",String)
+Variable.UDT.uWO.Define("QTY_ORDER",Float)
+Variable.UDT.uWO.Define("DATE_LAST_CHG",String)
+Variable.UDT.uWO.Define("TIME_LAST_CHG",String)
+Variable.UDT.uWO.Define("SEQ",String)
+Variable.UDT.uWO.Define("LMO",String)
+Variable.UDT.uWO.Define("PARENT",String)
+Variable.UDT.uWO.Define("ROUTER",String)
+Variable.UDT.uWO.Define("UNITS",Float)
+Variable.uGlobal.uWO.Declare("uWO")
+
+Variable.UDT.uWOFINAL.Define("JOBSUFFIX",String,JOBSUFFIX)
+Variable.UDT.uWOFINAL.Define("PRIORITY",String)
+Variable.UDT.uWOFINAL.Define("STATUS",String)
+Variable.UDT.uWOFINAL.Define("SPECIAL_INSTRUCTIONS",String)
+Variable.UDT.uWOFINAL.Define("OPEN_QTY",Float)
+Variable.UDT.uWOFINAL.Define("ORDER_LINE",String)
+Variable.UDT.uWOFINAL.Define("ORDER_NO",String)
+Variable.UDT.uWOFINAL.Define("PART",String)
+Variable.UDT.uWOFINAL.Define("UNIT_COST",Float)
+Variable.UDT.uWOFINAL.Define("DATE_DUE",String)
+Variable.UDT.uWOFINAL.Define("DATE_OPENED",String)
+Variable.UDT.uWOFINAL.Define("QTY_ORDER",Float)
+Variable.UDT.uWOFINAL.Define("DATE_LAST_CHG",String)
+Variable.UDT.uWOFINAL.Define("TIME_LAST_CHG",String)
+Variable.UDT.uWOFINAL.Define("SEQ",String)
+Variable.UDT.uWOFINAL.Define("LMO",String)
+Variable.UDT.uWOFINAL.Define("PARENT",String)
+Variable.UDT.uWOFINAL.Define("ROUTER",string)
+Variable.UDT.uWOFINAL.Define("UNITS",Float)
+Variable.uGlobal.uWOFINAL.Declare("uWOFINAL")
+
+Variable.UDT.uWOCheck.Define("JOBSUFFIX",String,JOBSUFFIX)
+Variable.UDT.uWOCheck.Define("PRIORITY",String)
+Variable.UDT.uWOCheck.Define("STATUS",String)
+Variable.UDT.uWOCheck.Define("SPECIAL_INSTRUCTIONS",String)
+Variable.UDT.uWOCheck.Define("OPEN_QTY",Float)
+Variable.UDT.uWOCheck.Define("ORDER_LINE",String)
+Variable.UDT.uWOCheck.Define("ORDER_NO",String)
+Variable.UDT.uWOCheck.Define("PART",String)
+Variable.UDT.uWOCheck.Define("UNIT_COST",Float)
+Variable.UDT.uWOCheck.Define("DATE_DUE",String)
+Variable.UDT.uWOCheck.Define("DATE_OPENED",String)
+Variable.UDT.uWOCheck.Define("QTY_ORDER",Float)
+Variable.UDT.uWOCheck.Define("DATE_LAST_CHG",String)
+Variable.UDT.uWOCheck.Define("TIME_LAST_CHG",String)
+Variable.UDT.uWOCheck.Define("SEQ",String)
+Variable.UDT.uWOCheck.Define("LMO",String)
+Variable.UDT.uWOCheck.Define("DELETE",String)
+Variable.UDT.uWOCheck.Define("PARENT",String)
+Variable.uGlobal.uWOCheck.Declare("uWOCheck")
+
+Variable.UDT.uShip.Define("ORDER_NO",String,ORDER_NO)
+Variable.UDT.uShip.Define("ORDER_SUFFIX",String,ORDER_SUFFIX)
+Variable.UDT.uShip.Define("DATE_SHIP",String)
+Variable.UDT.uShip.Define("TIME_SHIP",String)
+Variable.UDT.uShip.Define("NAME_CUSTOMER_SHIP",String)
+Variable.UDT.uShip.Define("QTY_SHIPPED",Float)
+Variable.UDT.uShip.Define("SHIP_VIA",String,SHIP_VIA)
+Variable.UDT.uShip.Define("DATE_LAST_CHG",String)
+Variable.UDT.uShip.Define("TIME_LAST_CHG",String)
+Variable.UDT.uShip.Define("TRACKING_NO",String,TRACKING_NO)
+Variable.uGlobal.uShip.Declare("uShip")
+Variable.UDT.uPO.Define("PURCHASE_ORDER",String,PURCHASE_ORDER)
+Variable.UDT.uPO.Define("PART",String)
+Variable.UDT.uPO.Define("REV",String)
+Variable.UDT.uPO.Define("VENDOR",String)
+Variable.UDT.uPO.Define("QTY_RECEIVED",Float)
+Variable.UDT.uPO.Define("QTY_REJECT",Float)
+Variable.UDT.uPO.Define("USER_ID",String)
+Variable.UDT.uPO.Define("PO_TYPE",String)
+Variable.UDT.uPO.Define("DATE_LAST_CHG",String)
+Variable.UDT.uPO.Define("TIME_LAST_CHG",String)
+Variable.UDT.uPO.Define("RECORD_NO",String,RECORD_NO)
+Variable.UDT.uPO.Define("DATE_RECEIVED",String)
+Variable.uGlobal.uPO.Declare("uPO")
+Variable.Global.Time.Declare(String)
+Variable.Global.Date.Declare(String)
+Variable.UDT.uPOCheck.Define("PURCHASE_ORDER",String,PURCHASE_ORDER)
+Variable.UDT.uPOCheck.Define("RECORD_NO",String,RECORD_NO)
+Variable.UDT.uPO.Define("RECORD_NO",String,RECORD_NO)
+Variable.UDT.uPO.Define("DATE_RECEIVED",String)
+
+Variable.Global.TimeReset.Declare(String)
+Variable.Global.Now.Declare(Float,0)
+Variable.Global.Then.Declare(Float,23.50)
+Program.Sub.Preflight.End
+
+Program.Sub.Main.Start
+F.Intrinsic.Control.SetErrorHandler("Main_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String)
+
+'This is a custom GAB script that will go through several tables to see if modifications have been made to certain items and if so export specific data to a text file that will later be read by AP Tech's ATS system
+'Date: 02/24/2016
+'Coded by: WAW
+
+'open connection
+F.odbc.Connection!conx.OpenConnection(V.Ambient.PDSN,V.Ambient.PUser,V.Ambient.PPass,1000000)
+
+''call the subroutine for each area of global shop and reset the time to what it was when first ran
+'Always call setlastchnewwo before calling wo, that way it picks up new work orders
+
+'check to make sure file is not running.
+F.Intrinsic.Control.CallSub(Isrunning)
+F.Intrinsic.UI.InvokeWaitDialog("Global Shop Export to ATS is Currently Running...")
+
+F.Intrinsic.Control.CallSub(Setlastchgnewwo)
+F.Intrinsic.Control.CallSub(Po)
+F.Intrinsic.Control.CallSub(So)
+F.Intrinsic.Control.CallSub(Wo)
+'F.Intrinsic.Control.CallSub(Inv)
+'F.Intrinsic.Control.CallSub(Bom)
+'F.Intrinsic.Control.CallSub(Ship)
+
+
+F.Intrinsic.Control.CallSub(Unload)
+
+
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("Main_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	Function.Intrinsic.String.Concat("Project: GCG_3625_Export.gas",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	F.Intrinsic.Control.CallSub(Unload)
+Function.Intrinsic.Control.EndIf
+
+
+Program.Sub.Main.End
+
+Program.Sub.Unload.Start
+F.Intrinsic.Control.SetErrorHandler("Unload_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String)
+
+'close connection to the database
+F.ODBC.Connection!conx.Close
+
+'end the program
+F.Intrinsic.Control.End
+
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("Unload_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	Function.Intrinsic.String.Concat("Project: GCG_3625_Export.gas",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	F.Intrinsic.Control.End
+
+Function.Intrinsic.Control.EndIf
+
+
+Program.Sub.Unload.End
+
+Program.Sub.INV.Start
+F.Intrinsic.Control.SetErrorHandler("INV_Err")
+F.Intrinsic.Control.ClearErrors
+
+'declare local variables
+V.Local.sError.Declare(String)
+V.Local.ssql.Declare(String)
+V.Local.ssql2.Declare(String)
+V.Local.scurrentdate.Declare(Date)
+V.Local.scurrenttime.Declare(String)
+V.Local.stimelastchanged.Declare(String)
+V.Local.spart.Declare(String)
+V.Local.srev.Declare(String)
+V.Local.ssalesaccount.Declare(String)
+V.Local.stextinfo1.Declare(String)
+V.Local.i.Declare(Long)
+V.Local.ssalesacctsql.Declare(String)
+V.Local.stextinfo1sql.Declare(String)
+V.Local.sinvfilepath.Declare(String)
+V.Local.bexists.Declare(Boolean)
+V.Local.sret.Declare(String)
+V.Local.sinvexport.Declare(String)
+V.Local.sfiletime.Declare(String)
+V.Local.sfiledate.Declare(String)
+V.Local.slastdate.Declare(String)
+V.Local.slasttime.Declare(String)
+V.Local.spm.Declare(String)
+V.Local.sstarttime.Declare(String)
+V.Local.ssql3.Declare(String)
+V.Local.stime.Declare(String)
+V.Local.serrorfiletowriteto.Declare(String)
+V.Local.serrorsql.Declare(String)
+V.Local.dLastRanDateTime.Declare(Date)
+V.Local.sLastRanDate.Declare(String)
+V.Local.sLastRanTime.Declare(String)
+
+F.Intrinsic.String.Build("{0}\{1}\{2}",V.Caller.FilesDir,"Error Logs","SQL.txt",V.local.serrorfiletowriteto)
+
+'Getting last date time ran, ITEM_ID = 0 is the last time inventory export was ran
+V.Local.ssql.Set("Select DATE_LAST_RAN from GCG_3625_LASTRAN WHERE ITEM_ID = 0")
+F.ODBC.Connection!conx.OpenLocalRecordsetRW("rst",V.Local.ssql)
+F.Intrinsic.Control.If(V.ODBC.conx!rst.EOF,=,True)
+	F.ODBC.conx!rst.AddNew
+	F.ODBC.conx!rst.Set!ITEM_ID(0)
+	V.Local.sLastRanDate.Set("20150101")
+	V.Local.sLastRanTime.Set("00000000")
+F.Intrinsic.Control.Else
+	'Getting date and formatting
+	F.Intrinsic.Date.DateComp(V.ODBC.conx!rst.FieldVal!DATE_LAST_RAN,V.Local.dLastRanDateTime)
+	F.Intrinsic.String.Format(V.Local.dLastRanDateTime,"yyyymmdd",V.Local.sLastRanDate)
+
+	'Getting time and formatting
+	F.Intrinsic.Date.TimeComp(V.ODBC.conx!rst.FieldVal!DATE_LAST_RAN,V.Local.dLastRanDateTime)
+	F.Intrinsic.String.Format(V.Local.dLastRanDateTime,"HhNnSs",V.Local.sLastRanTime)
+	F.Intrinsic.String.RPad(V.Local.sLastRanTime,"0",8,V.Local.sLastRanTime)
+F.Intrinsic.Control.EndIf
+
+'format date and time, specifically for inventory as the view cannot be queried against in this case
+F.Intrinsic.String.Format(V.Global.date,"YYMMDD",V.Global.date)
+F.intrinsic.String.Build("{0}{1}",V.global.Time,"00",V.Local.stime)
+'get information needed for export from INVENTORY_MSTR
+F.Intrinsic.String.Build("Select LEFT(PART, 17) as PART, LOCATION, DESCRIPTION, RIGHT(PART,3) as REV, PRODUCT_LINE, CODE_SORT, QTY_ONHAND, AMT_COST from INVENTORY_MSTR where TIME_LAST_CHG > '{0}' and cast(concat('20', date_last_CHG) as INT) >= '{1}'",V.local.sLastRanTime,V.local.sLastRanDate,V.Local.ssql2)
+F.ODBC.Connection!conx.OpenRecordsetRO("rst2",V.Local.sSql2)
+
+'Update datetime last ran
+F.ODBC.conx!rst.Set!DATE_LAST_RAN(V.Ambient.Now)
+F.ODBC.conx!rst.Update
+F.ODBC.conx!rst.Close
+
+F.Intrinsic.Control.if(V.ODBC.conX!rst2.EOF,=,False)
+	V.Local.sErrorsql.set(V.Local.ssql2)
+	'load to the UDT
+	F.Intrinsic.Variable.LoadUDTFromRecordset("conx","rst2","uglobal.uINV","false",100000)
+F.Intrinsic.Control.EndIf
+
+'close conneciton
+F.ODBC.conx!rst2.Close
+
+'Make sure UDT is not empty
+F.Intrinsic.Control.If(V.uGlobal.uINV.UBound,=,0,AND,V.uGlobal.uINV(0)!PART,=,"")
+	F.Intrinsic.Control.ExitSub
+F.Intrinsic.Control.EndIf
+
+'set the uINV udt field references needed
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uINV!SALES_ACCOUNT,"SALES_ACCOUNT")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uINV!TEXT_INFO1,"TEXT_INFO1")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uINV!DATE_LAST_CHG,"DATE_LAST_CHG")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uINV!TIME_LAST_CHG,"TIME_LAST_CHG")
+
+'loop through the UDT and get sales account and text info 1
+F.Intrinsic.Control.For(V.Local.i,V.uGlobal.uINV.LBound,V.uGlobal.uINV.UBound,1)
+	'get the sales account from PRODUCT_LINE where product_line is equal to the uINV UDT product line
+	F.Intrinsic.String.Build("Select SALES_ACCOUNT from V_PRODUCT_LINE where PRODUCT_LINE = '{0}'",V.uGlobal.uINV(v.Local.i)!PRODUCT_LINE,V.Local.ssalesacctsql)
+	F.ODBC.Connection!conx.OpenRecordsetRO("rstsales",V.Local.ssalesacctSql)
+	F.Intrinsic.Control.if(V.ODBC.conX!rstsales.EOF,=,False)
+		V.uGlobal.uINV(v.Local.i)!SALES_ACCOUNT.Set(V.ODBC.conx!rstsales.FieldValTrim!SALES_ACCOUNT)
+	F.Intrinsic.Control.EndIf
+	F.ODBC.conx!rstsales.Close
+	'do a gsspartstring for part/rev
+	F.Intrinsic.String.GSSPartString(V.uGlobal.uINV(v.Local.i)!PART,V.uGlobal.uINV(v.Local.i)!REV,V.Local.spart)
+
+	'get the text_info1 field from inventory mst2
+	F.intrinsic.string.build("select TEXT_INFO1 from V_INVENTORY_MST2 where PART = '{0}' and LOCATION = '{1}'",V.Local.spart,V.uGlobal.uINV(v.Local.i)!LOCATION,V.Local.stextinfo1sql)
+	F.ODBC.Connection!conx.OpenRecordsetRO("rsttextinfo",V.Local.stextinfo1sql)
+	F.Intrinsic.Control.if(V.ODBC.conX!rsttextinfo.EOF,=,False)
+		V.uGlobal.uINV(v.Local.i)!TEXT_INFO1.Set(V.ODBC.conx!rsttextinfo.FieldValTrim!TEXT_INFO1)
+	F.Intrinsic.Control.EndIf
+	F.ODBC.conx!rsttextinfo.Close
+F.Intrinsic.Control.Next(V.Local.i)
+
+'build the filepath
+F.Intrinsic.String.Build("{0}{1}",V.Caller.FilesDir,"\Export\INV",V.Local.sinvfilepath)
+
+'see if the folder exists if it doesn't create it
+F.Intrinsic.File.Exists(V.Local.sinvfilepath,V.Local.bexists)
+F.Intrinsic.Control.If(V.Local.bexists,=,False)
+	F.Intrinsic.File.CreateDir(V.Local.sinvfilepath)
+F.Intrinsic.Control.EndIf
+
+'set the time and date for the file
+V.Local.sfiledate.Set(V.Ambient.Date)
+F.Intrinsic.String.Format(V.Local.sfiledate,"MMDDYYYY",V.Local.sfiledate)
+V.Local.sfiletime.Set(V.Ambient.Time)
+F.Intrinsic.String.Format(V.Local.sfiletime,"HHMMSS",V.Local.sfiletime)
+
+'build the textfile path
+F.Intrinsic.String.Build("{0}\{1}{2}{3}",V.local.sinvfilepath,V.local.sfiledate,V.local.sfiletime,".txt",V.Local.sinvexport)
+
+'if there is nothing in the UDT exit the sub
+F.Intrinsic.Control.If(V.uGlobal.uINV.UBound,=,-1)
+	F.Intrinsic.Control.ExitSub
+F.Intrinsic.Control.EndIf
+
+'replace all the blanks with "NULL"
+F.Intrinsic.Variable.UDTMultiSeekSet(V.uGlobal.uINV!PART,"",V.uGlobal.uBOM!PART,"NULL")
+F.Intrinsic.Variable.UDTMultiSeekSet(V.uGlobal.uINV!LOCATION,"",V.uGlobal.uINV!LOCATION,"NULL")
+F.Intrinsic.Variable.UDTMultiSeekSet(V.uGlobal.uINV!DESCRIPTION,"",V.uGlobal.uINV!DESCRIPTION,"NULL")
+F.Intrinsic.Variable.UDTMultiSeekSet(V.uGlobal.uINV!REV,"",V.uGlobal.uINV!REV,"NULL")
+F.Intrinsic.Variable.UDTMultiSeekSet(V.uGlobal.uINV!PRODUCT_LINE,"",V.uGlobal.uINV!PRODUCT_LINE,"NULL")
+F.Intrinsic.Variable.UDTMultiSeekSet(V.uGlobal.uINV!CODE_SORT,"",V.uGlobal.uINV!CODE_SORT,"NULL")
+F.Intrinsic.Variable.UDTMultiSeekSet(V.uGlobal.uINV!QTY_ONHAND,"",V.uGlobal.uINV!QTY_ONHAND,"NULL")
+F.Intrinsic.Variable.UDTMultiSeekSet(V.uGlobal.uINV!AMT_COST,"",V.uGlobal.uINV!AMT_COST,"NULL")
+F.Intrinsic.Variable.UDTMultiSeekSet(V.uGlobal.uINV!SALES_ACCOUNT,"",V.uGlobal.uINV!SALES_ACCOUNT,"NULL")
+F.Intrinsic.Variable.UDTMultiSeekSet(V.uGlobal.uINV!TEXT_INFO1,"",V.uGlobal.uINV!TEXT_INFO1,"NULL")
+
+'save the UDT as a string then save the string as a textfile
+f.Intrinsic.Variable.udttostring(v.uGlobal.uINV,"PART*!*LOCATION*!*DESCRIPTION*!*REV*!*PRODUCT_LINE*!*CODE_SORT*!*QTY_ONHAND*!*AMT_COST*!*SALES_ACCOUNT*!*TEXT_INFO1",v.Ambient.NewLine,"~",v.Local.sret)
+
+'write the text file
+F.Intrinsic.File.String2File(V.Local.sinvexport,V.Local.sret)
+
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uINV!SALES_ACCOUNT,"")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uINV!TEXT_INFO1,"")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uINV!DATE_LAST_CHG,"")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uINV!TIME_LAST_CHG,"")
+
+V.uGlobal.uINV.redim(-1,-1)
+
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("INV_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	Function.Intrinsic.String.Concat("Project: GCG_3625_Export.gas",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.File.Append2FileNewLine(V.Local.serrorfiletowriteto,V.Local.serrorsql)
+	F.Intrinsic.debug.SetLA(V.Local.sError)
+	F.Intrinsic.Control.ExitSub
+Function.Intrinsic.Control.EndIf
+
+
+Program.Sub.INV.End
+
+Program.Sub.BOM.Start
+F.Intrinsic.Control.SetErrorHandler("BOM_Err")
+	F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String)
+V.Local.scurrentdate.Declare(String)
+V.Local.scurrenttime.Declare(String)
+V.Local.ssql.Declare(String)
+V.Local.i.Declare(Long)
+V.Local.sbomfilepath.Declare(String)
+V.Local.bexists.Declare(Boolean)
+V.Local.sfiledate.Declare(String)
+V.Local.sfiletime.Declare(String)
+V.Local.sbomexport.Declare(String)
+V.Local.sret.Declare(String)
+V.Local.ssql2.Declare(String)
+V.Local.ssql3.Declare(String)
+V.Local.shour.Declare(String)
+V.Local.spm.Declare(String)
+V.Local.serrorfile.Declare(String)
+V.Local.serrortime.Declare(String)
+V.Local.serrorfiletowriteto.Declare(String)
+V.Local.dLastRanDateTime.Declare(Date)
+V.Local.sLastRanDate.Declare(String)
+V.Local.sLastRanTime.Declare(String)
+
+F.Intrinsic.String.Build("{0}\{1}{2}",V.Caller.FilesDir,"ERRORTIME",".txt",V.Local.serrorfile)
+F.Intrinsic.String.Build("{0}\{1}\{2}",V.Caller.FilesDir,"Error Logs","Time.txt",V.local.serrorfiletowriteto)
+
+'Getting last date time ran, ITEM_ID = 1 is the last time BOM export was ran
+V.Local.ssql.Set("Select DATE_LAST_RAN from GCG_3625_LASTRAN WHERE ITEM_ID = 1")
+F.ODBC.Connection!conx.OpenLocalRecordsetRW("rst",V.Local.ssql)
+F.Intrinsic.Control.If(V.ODBC.conx!rst.EOF,=,True)
+	F.ODBC.conx!rst.AddNew
+	F.ODBC.conx!rst.Set!ITEM_ID(1)
+	V.Local.sLastRanDate.Set("150101")
+	V.Local.sLastRanTime.Set("00000000")
+F.Intrinsic.Control.Else
+	'Getting date and formatting
+	F.Intrinsic.Date.DateComp(V.ODBC.conx!rst.FieldVal!DATE_LAST_RAN,V.Local.dLastRanDateTime)
+	F.Intrinsic.String.Format(V.Local.dLastRanDateTime,"yyyymmdd",V.Local.sLastRanDate)
+
+	'Getting time and formatting
+	F.Intrinsic.Date.TimeComp(V.ODBC.conx!rst.FieldVal!DATE_LAST_RAN,V.Local.dLastRanDateTime)
+	F.Intrinsic.String.Format(V.Local.dLastRanDateTime,"HhNnSs",V.Local.sLastRanTime)
+	F.Intrinsic.String.RPad(V.Local.sLastRanTime,"0",8,V.Local.sLastRanTime)
+F.Intrinsic.Control.EndIf
+
+'get the bom information from BOM MSTR based on date and time last changed
+F.Intrinsic.String.Build("Select LEFT (PARENT, 17) as PARENT, RIGHT(PARENT,3) as REV, SEQUENCE_BOM, PART, QUANTITY from BOM_MSTR where TIME_LAST_CHG > '{0}' and DATE_LAST_CHG >= '{1}' order by PARENT asc",V.Local.sLastRanTime,V.Local.sLastRanDate,V.Local.ssql2)
+F.ODBC.Connection!conx.OpenRecordsetRO("rst2",V.Local.sSql2)
+
+'Update datetime last ran
+F.ODBC.conx!rst.Set!DATE_LAST_RAN(V.Ambient.Now)
+F.ODBC.conx!rst.Update
+F.ODBC.conx!rst.Close
+
+F.Intrinsic.Control.if(V.ODBC.conX!rst2.EOF,=,False)
+	F.Intrinsic.Variable.LoadUDTFromRecordset("conx","rst2","uglobal.uBOM","false",100000)
+F.Intrinsic.Control.EndIf
+
+'close connection to the second recordset
+F.ODBC.conx!rst2.Close
+
+'Make sure UDT is not empty
+F.Intrinsic.Control.If(V.uGlobal.uBOM.UBound,=,0,AND,V.uGlobal.uBOM(0)!PARENT,=,"")
+	F.Intrinsic.Control.ExitSub
+F.Intrinsic.Control.EndIf
+
+'build the filepath
+F.Intrinsic.String.Build("{0}{1}",V.Caller.FilesDir,"\Export\BOM",V.Local.sbomfilepath)
+
+'see if the folder exists if it doesn't create it
+F.Intrinsic.File.Exists(V.Local.sbomfilepath,V.Local.bexists)
+F.Intrinsic.Control.If(V.Local.bexists,=,False)
+	F.Intrinsic.File.CreateDir(V.Local.sbomfilepath)
+F.Intrinsic.Control.EndIf
+
+'set the time and date for the file
+V.Local.sfiledate.Set(V.Ambient.Date)
+F.Intrinsic.String.Format(V.Local.sfiledate,"MMDDYYYY",V.Local.sfiledate)
+V.Local.sfiletime.Set(V.Ambient.Time)
+F.Intrinsic.String.Format(V.Local.sfiletime,"HHMMSS",V.Local.sfiletime)
+
+'build the textfile path
+F.Intrinsic.String.Build("{0}\{1}{2}{3}",V.local.sbomfilepath,V.local.sfiledate,V.local.sfiletime,".txt",V.Local.sbomexport)
+'F.Intrinsic.File.String2File(V.Local.sinvexport,V.Local.sret)
+
+'if there is nothing in the UDT exit the sub
+F.Intrinsic.Control.If(V.uGlobal.uBOM.UBound,=,-1)
+	F.Intrinsic.Control.ExitSub
+F.Intrinsic.Control.EndIf
+
+'set all blanks in the UDT to NULL
+F.Intrinsic.Variable.UDTMultiSeekSet(V.uGlobal.uBOM!REV,"",V.uGlobal.uBOM!REV,"NULL")
+F.Intrinsic.Variable.UDTMultiSeekSet(V.uGlobal.uBOM!SEQUENCE_BOM,"",V.uGlobal.uBOM!SEQUENCE_BOM,"NULL")
+F.Intrinsic.Variable.UDTMultiSeekSet(V.uGlobal.uBOM!PARENT,"",V.uGlobal.uBOM!PARENT,"NULL")
+F.Intrinsic.Variable.UDTMultiSeekSet(V.uGlobal.uBOM!PART,"",V.uGlobal.uBOM!PART,"NULL")
+F.Intrinsic.Variable.UDTMultiSeekSet(V.uGlobal.uBOM!QUANTITY,"",V.uGlobal.uBOM!QUANTITY,"NULL")
+
+'save the UDT as a string then save the string as a textfile
+f.Intrinsic.Variable.udttostring(v.uGlobal.uBOM,"PARENT*!*REV*!*SEQUENCE_BOM*!*PART*!*QUANTITY",v.Ambient.NewLine,"~",v.Local.sret)
+'save the return as a text file
+F.Intrinsic.File.String2File(V.Local.sbomexport,V.Local.sret)
+
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uBOM!DATE_LAST_CHG,"")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uBOM!TIME_LAST_CHG,"")
+
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("BOM_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	Function.Intrinsic.String.Concat("Project: GCG_3625_Export.gas",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
+	Function.Intrinsic.File.Append2Filenewline(V.Local.serrorfiletowriteto,V.Local.serrortime)
+	F.Intrinsic.Debug.SetLA(V.Local.sError)
+	F.Intrinsic.Control.ExitSub
+Function.Intrinsic.Control.EndIf
+
+
+Program.Sub.BOM.End
+
+Program.Sub.SO.Start
+F.Intrinsic.Control.SetErrorHandler("SO_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String)
+V.Local.scurrentdate.Declare(String)
+V.Local.scurrenttime.Declare(String)
+V.Local.ssql.Declare(String)
+V.Local.i.Declare(Long)
+V.Local.stextsql.Declare(String)
+V.Local.sstandingsql.Declare(String)
+V.Local.sstanding.Declare(String)
+V.Local.fstanding.Declare(Float)
+V.Local.ssofilepath.Declare(String)
+V.Local.bexists.Declare(Boolean)
+V.Local.sfiledate.Declare(String)
+V.Local.sfiletime.Declare(String)
+V.Local.ssoexport.Declare(String)
+V.Local.sret.Declare(String)
+V.Local.scustomersql.Declare(String)
+V.Local.ssql2.Declare(String)
+V.Local.ssql3.Declare(String)
+V.Local.scust.Declare(String)
+V.Local.shour.Declare(String)
+V.Local.spm.Declare(String)
+V.Local.dLastRanDateTime.Declare(Date)
+V.Local.sLastRanDate.Declare(String)
+V.Local.sLastRanTime.Declare(String)
+V.Local.lmin.Declare(Long)
+V.Local.dDate.Declare(Date)
+
+
+'Getting last date time ran, ITEM_ID = 2 is the last time SO export was ran
+V.Local.ssql.Set("Select DATE_LAST_RAN from GCG_3625_LASTRAN WHERE ITEM_ID = 2")
+F.ODBC.Connection!conx.OpenLocalRecordsetRW("rst",V.Local.ssql)
+F.Intrinsic.Control.If(V.ODBC.conx!rst.EOF,=,True)
+	F.ODBC.conx!rst.AddNew
+	F.ODBC.conx!rst.Set!ITEM_ID(2)
+	V.Local.sLastRanDate.Set("150101")
+	V.Local.sLastRanTime.Set("00000000")
+F.Intrinsic.Control.Else
+	'Getting date and formatting
+	F.Intrinsic.Date.DateComp(V.ODBC.conx!rst.FieldVal!DATE_LAST_RAN,V.Local.dLastRanDateTime)
+	F.Intrinsic.String.Format(V.Local.dLastRanDateTime,"yyyymmdd",V.Local.sLastRanDate)
+
+	'Getting time and formatting
+	F.Intrinsic.Date.TimeComp(V.ODBC.conx!rst.FieldVal!DATE_LAST_RAN,V.Local.dLastRanDateTime)
+	F.Intrinsic.String.Format(V.Local.dLastRanDateTime,"HhNnSs",V.Local.sLastRanTime)
+	F.Intrinsic.String.RPad(V.Local.sLastRanTime,"0",8,V.Local.sLastRanTime)
+F.Intrinsic.Control.EndIf
+
+F.Intrinsic.String.Build("SELECT ORDER_NO, RECORD_NO, CUSTOMER, CUSTOMER_PO, DATE_ORDER, DATE_DUE, SHIP_VIA, DATE_DUE as ORIGINAL_DUE_DATE from ORDER_HEADER  where RECORD_TYPE = 'A' and TIME_LAST_CHG > '{0}' and DATE_LAST_CHG >= '{1}' AND DATE_DUE <> '1900-01-01'",V.Local.sLastRanTime,V.Local.sLastRanDate,V.Local.ssql2)
+F.ODBC.Connection!conx.OpenRecordsetRO("rst2",V.Local.sSql2)
+
+'Update datetime last ran
+F.ODBC.conx!rst.Set!DATE_LAST_RAN(V.Ambient.Now)
+F.ODBC.conx!rst.Update
+F.ODBC.conx!rst.Close
+
+F.Intrinsic.Control.if(V.ODBC.conX!rst2.EOF,=,False)
+	F.Intrinsic.Variable.LoadUDTFromRecordset("conx","rst2","uglobal.uSO","false",100000)
+F.Intrinsic.Control.EndIf
+'close conneciton
+F.ODBC.conx!rst2.Close
+
+'Make sure UDT is not empty
+F.Intrinsic.Control.If(V.uGlobal.uSO.UBound,=,0,"AND",V.uGlobal.uSO(0)!ORDER_NO,=,"")
+	F.Intrinsic.Control.ExitSub
+F.Intrinsic.Control.EndIf
+
+'set the uSO udt field references needed
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uSO!TEXT,"TEXT")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uSO!STANDING,"STANDING")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uSO!NAME_CUSTOMER,"NAME_CUSTOMER")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uSO!DATE_LAST_CHG,"DATE_LAST_CHG")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uSO!TIME_LAST_CHG,"TIME_LAST_CHG")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uSO!ADDRESS_1_SHIP,"ADDRESS_1_SHIP")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uSO!ADDRESS_2_SHIP,"ADDRESS_2_SHIP")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uSO!CITY_SHIP,"CITY_SHIP")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uSO!STATE_SHIP,"STATE_SHIP")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uSO!CODE_ZIP_SHIP,"CODE_ZIP_SHIP")
+
+'loop through the UDT and see if the TIME_LAST_CHG is greater than the TIME_LAST_CHG for that part, rev and loc in the custom table GCG_3625_SO_Export
+F.Intrinsic.Control.For(V.Local.i,V.uGlobal.uSO.LBound,V.uGlobal.uSO.UBound,1)
+	'Converting date strings to date format
+	
+	F.Intrinsic.Control.If(V.uGlobal.uSO(V.Local.i)!DATE_ORDER,<>,"000000")
+		F.Intrinsic.Date.ConvertDString(V.uGlobal.uSO(V.Local.i)!DATE_ORDER,"mm/dd/yyyy",V.Local.dDate)
+		V.uGlobal.uSO(V.Local.i)!DATE_ORDER.Set(V.Local.dDate.String)
+	F.Intrinsic.Control.Else
+		V.uGlobal.uSO(V.Local.i)!DATE_ORDER.Set("01/01/1900")
+	F.Intrinsic.Control.EndIf
+
+	F.Intrinsic.Control.If(V.uGlobal.uSO(V.Local.i)!DATE_DUE,<>,"000000")
+		F.Intrinsic.Date.ConvertDString(V.uGlobal.uSO(V.Local.i)!DATE_DUE,"mm/dd/yyyy",V.Local.dDate)
+		V.uGlobal.uSO(V.Local.i)!DATE_DUE.Set(V.Local.dDate.String)
+	F.Intrinsic.Control.Else
+		V.uGlobal.uSO(V.Local.i)!DATE_DUE.Set("01/01/1900")
+	F.Intrinsic.Control.EndIf
+
+	F.Intrinsic.Control.If(V.uGlobal.uSO(V.Local.i)!ORIGINAL_DUE_DATE,<>,"000000")
+		F.Intrinsic.Date.ConvertDString(V.uGlobal.uSO(V.Local.i)!ORIGINAL_DUE_DATE,"mm/dd/yyyy",V.Local.dDate)
+		V.uGlobal.uSO(V.Local.i)!ORIGINAL_DUE_DATE.Set(V.Local.dDate.String)
+	F.Intrinsic.Control.Else
+		V.uGlobal.uSO(V.Local.i)!ORIGINAL_DUE_DATE.Set("01/01/1900")
+	F.Intrinsic.Control.EndIf
+
+	'get thecustomers shipping information
+	F.Intrinsic.String.Build("Select ADDRESS_1_SHIP,ADDRESS_2_SHIP, CITY_SHIP, STATE_SHIP, CODE_ZIP_SHIP from V_ORDER_SHIP_TO where ORDER_NO = '{0}' and CUSTOMER = '{1}'",V.uGlobal.uSO(v.Local.i)!ORDER_NO,V.uglobal.uSO(v.local.i)!CUSTOMER,V.Local.stextsql)
+	F.ODBC.Connection!conx.OpenRecordsetRO("rsttext",V.Local.stextSql)
+	F.Intrinsic.Control.if(V.ODBC.conX!rsttext.EOF,=,False)
+		V.uGlobal.uSO(v.Local.i)!ADDRESS_1_SHIP.Set(V.ODBC.conx!rsttext.FieldValTrim!ADDRESS_1_SHIP)
+		V.uGlobal.uSO(v.Local.i)!ADDRESS_2_SHIP.Set(V.ODBC.conx!rsttext.FieldValTrim!ADDRESS_2_SHIP)
+		V.uGlobal.uSO(v.Local.i)!CITY_SHIP.Set(V.ODBC.conx!rsttext.FieldValTrim!CITY_SHIP)
+		V.uGlobal.uSO(v.Local.i)!STATE_SHIP.Set(V.ODBC.conx!rsttext.FieldValTrim!STATE_SHIP)
+		V.uGlobal.uSO(v.Local.i)!CODE_ZIP_SHIP.Set(V.ODBC.conx!rsttext.FieldValTrim!CODE_ZIP_SHIP)
+	F.Intrinsic.Control.Else
+		V.uGlobal.uSO(v.Local.i)!ADDRESS_1_SHIP.Set("")
+		V.uGlobal.uSO(v.Local.i)!ADDRESS_2_SHIP.Set("")
+		V.uGlobal.uSO(v.Local.i)!CITY_SHIP.Set("")
+		V.uGlobal.uSO(v.Local.i)!STATE_SHIP.Set("")
+		V.uGlobal.uSO(v.Local.i)!CODE_ZIP_SHIP.Set("")
+	F.Intrinsic.Control.EndIf
+	F.ODBC.conx!rsttext.Close
+
+'This is no longer needed. The program should just export a null for this field.
+'	'get the sales account from ORDER_TEXT where product_line is equal to the uSO UDT order no
+'	F.Intrinsic.String.Build("Select TEXT from V_ORDER_HF_TEXT where ORDER_NUMBER = '{0}' AND TYPE = 0",V.uGlobal.uSO(v.Local.i)!ORDER_NO,V.Local.stextsql)
+'	F.ODBC.Connection!conx.OpenRecordsetRO("rsttext",V.Local.stextSql)
+'	F.Intrinsic.Control.if(V.ODBC.conX!rsttext.EOF,=,False)
+'		V.uGlobal.uSO(v.Local.i)!TEXT.Set(V.ODBC.conx!rsttext.FieldValTrim!TEXT)
+'	F.Intrinsic.Control.EndIf
+'	F.ODBC.conx!rsttext.Close
+
+	'get the customer's name from customer master
+	F.Intrinsic.String.Build("Select NAME_CUSTOMER from V_CUSTOMER_MASTER where CUSTOMER = '{0}'",V.uGlobal.uSO(v.Local.i)!CUSTOMER,V.Local.scustomersql)
+	F.ODBC.Connection!conx.OpenRecordsetRO("rstcustomer",V.Local.scustomerSql)
+	F.Intrinsic.Control.if(V.ODBC.conX!rstcustomer.EOF,=,False)
+		V.Local.scust.set(V.ODBC.conx!rstcustomer.FieldValTrim!NAME_CUSTOMER)
+		F.Intrinsic.String.Replace(V.Local.scust,",","",V.Local.scust)
+		V.uGlobal.uSO(v.Local.i)!NAME_CUSTOMER.Set(V.local.scust)
+	F.Intrinsic.Control.EndIf
+	F.ODBC.conx!rstcustomer.Close
+
+	'get the standing
+	F.intrinsic.string.build("select DATE_SHIP,QTY_ORDERED, QTY_SHIPPED from V_ORDER_LINES where ORDER_NO = '{0}' and RECORD_NO = '{1}'",V.uGlobal.uSO(v.Local.i)!ORDER_NO,V.uglobal.uso(v.local.i)!RECORD_NO,V.Local.sstandingsql)
+	F.ODBC.Connection!conx.OpenRecordsetRO("rststanding",V.Local.sstandingsql)
+	F.Intrinsic.Control.if(V.ODBC.conX!rststanding.EOF,=,False)
+	'DATE_SHIP not equal to blank if so "SHIPPED", if QTY_ORDER - QTY_SHIPPED > 0 then "PARTIAL" otherwise "NOT SHIPPED"	
+		F.Intrinsic.Control.If(V.ODBC.conx!rststanding.fieldvaltrim!DATE_SHIP,=,"")
+			V.Local.sstanding.Set("NOT SHIPPED")
+		F.Intrinsic.control.Else
+			F.Intrinsic.Math.Sub(V.ODBC.conx!rststanding.FieldValTrim!QTY_ORDERED,V.odbc.conx!rststanding.FieldValTrim!QTY_SHIPPED,V.local.fstanding)
+			F.Intrinsic.Control.If(V.Local.fstanding,>,0)
+				V.Local.sstanding.Set("PARTIAL")
+			F.Intrinsic.Control.Else
+				V.Local.sstanding.Set("SHIPPED")
+			F.Intrinsic.Control.EndIf
+		F.Intrinsic.Control.EndIf
+		'set the standing
+		V.uGlobal.uSO(v.Local.i)!STANDING.Set(V.local.sstanding)
+	F.Intrinsic.Control.EndIf
+	F.ODBC.conx!rststanding.Close
+
+F.Intrinsic.Control.Next(V.Local.i)
+
+'build the filepath
+F.Intrinsic.String.Build("{0}{1}",V.Caller.FilesDir,"\Export\SO",V.Local.ssofilepath)
+
+'see if the folder exists if it doesn't create it
+F.Intrinsic.File.Exists(V.Local.ssofilepath,V.Local.bexists)
+F.Intrinsic.Control.If(V.Local.bexists,=,False)
+	F.Intrinsic.File.CreateDir(V.Local.ssofilepath)
+F.Intrinsic.Control.EndIf
+
+'set the time and date for the file
+F.Intrinsic.String.Format(V.Ambient.Date,"MMDDYYYY",V.Local.sfiledate)
+F.Intrinsic.String.Format(V.Ambient.Time,"HHMMSS",V.Local.sfiletime)
+
+'build the textfile path
+F.Intrinsic.String.Build("{0}\{1}{2}{3}",V.local.ssofilepath,V.local.sfiledate,V.local.sfiletime,".txt",V.Local.ssoexport)
+'F.Intrinsic.File.String2File(V.Local.sinvexport,V.Local.sret)
+
+F.Intrinsic.Control.If(V.uGlobal.uSO.UBound,=,-1)
+	F.Intrinsic.Control.ExitSub
+F.Intrinsic.Control.EndIf
+
+F.Intrinsic.Variable.UDTMultiSeekSet(V.uGlobal.uSO!ORDER_NO,"",V.uGlobal.uSO!ORDER_NO,"NULL")
+F.Intrinsic.Variable.UDTMultiSeekSet(V.uGlobal.uSO!CUSTOMER,"",V.uGlobal.uSO!CUSTOMER,"NULL")
+F.Intrinsic.Variable.UDTMultiSeekSet(V.uGlobal.uSO!CUSTOMER_PO,"",V.uGlobal.uSO!CUSTOMER_PO,"NULL")
+F.Intrinsic.Variable.UDTMultiSeekSet(V.uGlobal.uSO!DATE_ORDER,"",V.uGlobal.uSO!DATE_ORDER,"NULL")
+F.Intrinsic.Variable.UDTMultiSeekSet(V.uGlobal.uSO!DATE_DUE,"",V.uGlobal.uSO!DATE_DUE,"NULL")
+F.Intrinsic.Variable.UDTMultiSeekSet(V.uGlobal.uSO!TEXT,"",V.uGlobal.uSO!TEXT,"NULL")
+F.Intrinsic.Variable.UDTMultiSeekSet(V.uGlobal.uSO!STANDING,"",V.uGlobal.uSO!STANDING,"NULL")
+F.Intrinsic.Variable.UDTMultiSeekSet(V.uGlobal.uSO!ADDRESS_1_SHIP,"",V.uGlobal.uSO!ADDRESS_1_SHIP,"NULL")
+F.Intrinsic.Variable.UDTMultiSeekSet(V.uGlobal.uSO!ADDRESS_2_SHIP,"",V.uGlobal.uSO!ADDRESS_2_SHIP,"NULL")
+
+F.Intrinsic.Variable.UDTMultiSeekSet(V.uGlobal.uSO!CITY_SHIP,"",V.uGlobal.uSO!CITY_SHIP,"NULL")
+F.Intrinsic.Variable.UDTMultiSeekSet(V.uGlobal.uSO!CODE_ZIP_SHIP,"",V.uGlobal.uSO!CODE_ZIP_SHIP,"NULL")
+F.Intrinsic.Variable.UDTMultiSeekSet(V.uGlobal.uSO!STATE_SHIP,"",V.uGlobal.uSO!STATE_SHIP,"NULL")
+F.Intrinsic.Variable.UDTMultiSeekSet(V.uGlobal.uSO!SHIP_VIA,"",V.uGlobal.uSO!SHIP_VIA,"NULL")
+F.Intrinsic.Variable.UDTMultiSeekSet(V.uGlobal.uSO!ORIGINAL_DUE_DATE,"",V.uGlobal.uSO!ORIGINAL_DUE_DATE,"NULL")
+F.Intrinsic.Variable.UDTMultiSeekSet(V.uGlobal.uSO!RECORD_NO,"",V.uGlobal.uSO!RECORD_NO,"NULL")
+F.Intrinsic.Variable.UDTMultiSeekSet(V.uGlobal.uSO!NAME_CUSTOMER,"",V.uGlobal.uSO!NAME_CUSTOMER,"NULL")
+
+'save the UDT as a string then save the string as a textfile
+f.Intrinsic.Variable.udttostring(v.uGlobal.uSO,"ORDER_NO*!*RECORD_NO*!*CUSTOMER*!*NAME_CUSTOMER*!*CUSTOMER_PO*!*DATE_ORDER*!*DATE_DUE*!*TEXt*!*STANDING*!*ADDRESS_1_SHIP*!*ADDRESS_2_SHIP*!*CITY_SHIP*!*STATE_SHIP*!*CODE_ZIP_SHIP*!*SHIP_VIA*!*ORIGINAL_DUE_DATE",v.Ambient.NewLine,"~",v.Local.sret)
+
+F.Intrinsic.File.String2File(V.Local.ssoexport,V.Local.sret)
+
+'set the uSO udt field references needed
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uSO!TEXT,"")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uSO!STANDING,"")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uSO!NAME_CUSTOMER,"")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uSO!DATE_LAST_CHG,"")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uSO!TIME_LAST_CHG,"")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uSO!ADDRESS_1_SHIP,"")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uSO!ADDRESS_2_SHIP,"")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uSO!CITY_SHIP,"")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uSO!STATE_SHIP,"")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uSO!CODE_ZIP_SHIP,"")
+
+V.uGlobal.uSO.Redim(-1,-1)
+
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("SO_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	Function.Intrinsic.String.Concat("Project: GCG_3625_Export.gas",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	F.Intrinsic.control.CallSub(Unload)
+Function.Intrinsic.Control.EndIf
+
+
+Program.Sub.SO.End
+
+Program.Sub.WO.Start
+F.Intrinsic.Control.SetErrorHandler("WO_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String)
+V.Local.scurrentdate.Declare(String)
+V.Local.scurrenttime.Declare(String)
+V.Local.ssql.Declare(String)
+V.Local.i.Declare(Long)
+V.Local.swosql.Declare(String)
+V.Local.swofilepath.Declare(String)
+V.Local.bexists.Declare(Boolean)
+V.Local.sret.Declare(String)
+V.Local.sfiletime.Declare(String)
+V.Local.sfiledate.Declare(String)
+V.Local.funitcost.Declare(Float)
+V.Local.sjobsuffix.Declare(String)
+V.Local.sjob.Declare(String)
+V.Local.ssuff.Declare(String)
+V.Local.famtmaterial.Declare(Float)
+V.Local.famtoverhead.Declare(Float)
+V.Local.famtlabor.Declare(Float)
+V.Local.swoexport.Declare(String)
+V.Local.sordersql.Declare(String)
+V.Local.ssql2.Declare(String)
+V.Local.ssql3.Declare(String)
+V.Local.shour.Declare(String)
+V.Local.spm.Declare(String)
+V.Local.sstatus.declare(String)
+V.Local.idetail.Declare(Long)
+V.Local.iubound.Declare(Long)
+V.Local.iloopcount.Declare(Long)
+V.Local.sorderlinesql.Declare(String)
+V.Local.iwocheck.Declare(Long)
+V.Local.swocheck.Declare(String)
+V.Local.iseqcheck.Declare(Long)
+V.Local.isortcount.Declare(Long)
+V.Local.ssortsql.Declare(String)
+V.Local.sparentwosuff.Declare(String)
+V.Local.dLastRanDateTime.Declare(Date)
+V.Local.sLastRanDateTime.Declare(String)
+V.Local.sLogFile.Declare(String)
+V.Local.sLogFilePath.Declare(String)
+V.Local.sLogTime.Declare(String)
+V.Local.sTemp.Declare(String)
+
+'We need to log some of this information so that I can look and see what's going on at each step... Something's failing to get teh Order Number and Order Line
+'F.Intrinsic.String.Format(V.Ambient.Now,"mmddyyHhNnSs",V.Local.sLogTime)
+'F.Intrinsic.String.Build("{0}\WOLog{1}",V.Caller.TempDir,V.Local.sLogTime,V.Local.sLogFilePath)
+'F.Intrinsic.String.Build("WO Export Start: {0}",V.Ambient.Now,V.Local.sLogFile)
+
+'Getting last date time ran, ITEM_ID = 3 is the last time WO export was ran
+V.Local.ssql.Set("Select DATE_LAST_RAN from GCG_3625_LASTRAN WHERE ITEM_ID = 3")
+F.ODBC.Connection!conx.OpenLocalRecordsetRW("rst",V.Local.ssql)
+F.Intrinsic.Control.If(V.ODBC.conx!rst.EOF,=,True)
+	F.ODBC.conx!rst.AddNew
+	F.ODBC.conx!rst.Set!ITEM_ID(3)
+	V.Local.sLastRanDateTime.Set("2015-01-01 00:00:00")
+F.Intrinsic.Control.Else
+	V.Local.dLastRanDateTime.Set(V.ODBC.conx!rst.FieldVal!DATE_LAST_RAN)
+	F.Intrinsic.String.Format(V.Local.dLastRanDateTime,"yyyy-mm-dd Hh:Nn:Ss",V.Local.sLastRanDateTime)
+F.Intrinsic.Control.EndIf
+
+F.Intrinsic.String.Build("Select  (JOB + '-' + SUFFIX) as '{0}'  from V_JOB_HEADER left outer join GCG_3625_WO_LASTCHG on V_JOB_HEADER.JOB = GCG_3625_WO_LASTCHG.JOB and V_JOB_HEADER.SUFFIX = GCG_3625_WO_LASTCHG.SUFFIX where GCG_3625_WO_LASTCHG.DATE_LAST_CHG >= '{1}' order by JOB","JOBSUFFIX",V.Local.sLastRanDateTime,V.Local.ssql2)
+'f.Intrinsic.String.Build("{0}{1}Changed Jobs Query: {2}",V.Local.sLogFile,V.Ambient.NewLine,V.Local.sSql2,V.Local.sLogFile)
+F.ODBC.Connection!conx.OpenRecordsetRO("rst2",V.Local.sSql2)
+
+'Update datetime last ran
+F.ODBC.conx!rst.Set!DATE_LAST_RAN(V.Ambient.Now)
+F.ODBC.conx!rst.Update
+F.ODBC.conx!rst.Close
+
+F.Intrinsic.Control.if(V.ODBC.conX!rst2.EOF,=,False)
+	F.Intrinsic.Variable.LoadUDTFromRecordset("conx","rst2","uglobal.uWO","True",100000)
+F.Intrinsic.Control.EndIf
+
+'close conneciton
+F.ODBC.conx!rst2.Close
+
+'Make sure UDT is not empty
+F.Intrinsic.Control.If(V.uGlobal.uWO.UBound,=,0,AND,V.uGlobal.uWO(0)!JOBSUFFIX,=,"")
+'	F.Intrinsic.File.String2File(V.Local.sLogFilePath,V.Local.sLogFile)
+	F.Intrinsic.Control.ExitSub
+F.Intrinsic.Control.EndIf
+
+'F.Intrinsic.Variable.UDTToStringCSV(V.uGlobal.uWO,"JOBSUFFIX",V.Local.sTemp)
+'F.Intrinsic.String.Build("{0}{1}Changed Job-Suffix List: {2}",V.Local.sLogFile,V.Ambient.NewLine,V.Local.sTemp,V.Local.sLogFile)
+
+'copy the UDT
+F.Intrinsic.Variable.UDTCopy(V.uGlobal.uWO,V.uGlobal.uWOFINAL,True)
+
+'set field references for the new UDT
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uWOFINAL!PRIORITY,"PRIORITY")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uWOFINAL!ORDER_NO,"ORDER_NO")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uWOFINAL!ORDER_LINE,"ORDER_LINE")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uWOFINAL!PART,"PART")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uWOFINAL!SEQ,"SEQ")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uWOFINAL!QTY_ORDER,"QTY_ORDER")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uWOFINAL!DATE_DUE,"DATE_DUE")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uWOFINAL!PARENT,"PARENT")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uWOFINAL!DATE_OPENED,"DATE_OPENED")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uWOFINAL!UNIT_COST,"UNIT_COST")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uWOFINAL!OPEN_QTY,"OPEN_QTY")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uWOFINAL!STATUS,"STATUS")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uWOFINAL!SPECIAL_INSTRUCTIONS,"SPECIAL_INSTRUCTIONS")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uWOFINAL!LMO,"LMO")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uWOFINAL!DATE_LAST_CHG,"DATE_LAST_CHG")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uWOFINAL!TIME_LAST_CHG,"TIME_LAST_CHG")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uWOFINAL!JOBSUFFIX,"JOBSUFFIX")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uWOFINAL!ROUTER,"ROUTER")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uWOFINAL!UNITS,"UNITS")
+
+'loop through the UDT and see if the TIME_LAST_CHG is greater than the TIME_LAST_CHG for that part, rev and loc in the custom table GCG_3625_WO_Export
+F.Intrinsic.Control.For(V.Local.i,V.uGlobal.uWO.LBound,V.uGlobal.uWO.UBound,1)
+	'ag blank jobs and split the job suffix
+	F.Intrinsic.String.Split(V.uGlobal.uWO(v.Local.i)!JOBSUFFIX,"-",V.Local.sjobsuffix)
+		F.Intrinsic.Control.If(V.Local.sjobsuffix(0),=,"")
+			F.Intrinsic.Variable.UDTFlagOrdinal(V.uGlobal.uWOFinal,True,V.Local.iubound)
+			F.Intrinsic.Control.Next(V.Local.i)
+		F.Intrinsic.Control.EndIf
+
+	V.Local.sjob.Set(V.Local.sjobsuffix(0))
+	V.Local.ssuff.Set(V.Local.sjobsuffix(1))
+	
+'	F.Intrinsic.String.Build("{0}{1}Job and Suffix: {2} - {3}",v.Local.sLogFile,V.Ambient.NewLine,V.Local.sjob,V.Local.sSuff,V.Local.sLogFile)
+
+	V.Local.iubound.Set(V.uGlobal.uWOFINAL.UBound)
+
+	'get the sequence and LMO from JOB details
+	'NOTE** SETTING PARENT AS UNITS
+	F.Intrinsic.String.Build("Select V_JOB_HEADER.PRIORITY, V_JOB_HEADER.QTY_ORDER, V_JOB_HEADER.PARENT_WO as PARENT,  V_JOB_HEADER.PARENT_SUFFIX_PARENT, V_JOB_HEADER.DATE_DUE, V_JOB_HEADER.DATE_CLOSED, (V_JOB_HEADER.COMMENTS_1+','+ V_JOB_HEADER.COMMENTS_2) as SPECIAL_INSTRUCTIONS, V_JOB_HEADER.DATE_OPENED, V_JOB_HEADER.AMT_MATERIAL, V_JOB_HEADER.AMT_LABOR, V_JOB_HEADER.AMT_OVERHEAD, V_JOB_HEADER.QTY_COMPLETED,V_JOB_HEADER.SALES_ORDER,V_JOB_HEADER.SALES_ORDER_LINE,V_JOB_OPERATIONS.SEQ, V_JOB_OPERATIONS.UNITS, V_JOB_OPERATIONS.LMO, V_JOB_OPERATIONS.PART,V_JOB_OPERATIONS.ROUTER from V_JOB_HEADER join V_JOB_OPERATIONS on V_JOB_HEADER.JOB = V_JOB_OPERATIONS.JOB and V_JOB_HEADER.SUFFIX=V_JOB_OPERATIONS.SUFFIX where V_JOB_HEADER.SUFFIX = '{0}' and V_JOB_HEADER.JOB= '{1}'",V.local.ssuff,V.Local.sjob,V.Local.ssql)
+'	F.Intrinsic.String.Build("{0}{1}Job Information Query: {2}",v.Local.sLogFile,V.Ambient.NewLine,V.Local.ssql,V.Local.sLogFile)
+	F.ODBC.Connection!conx.OpenRecordsetRO("rst",V.Local.sSql)
+	F.Intrinsic.Control.If(V.ODBC.conx!rst.EOF,=,False)
+		F.Intrinsic.Control.DoUntil(V.ODBC.conX!rst.EOF,=,True)
+
+		'redim the ubound of the copy udt
+		F.Intrinsic.Control.If(V.Local.iubound,>=,1)
+			F.Intrinsic.Math.Add(V.Local.iubound,1,V.Local.iubound)
+			V.uGlobal.uWOFINAL.RedimPreserve(V.uGlobal.uWOFINAL.LBound,V.local.iubound)
+		F.Intrinsic.Control.Else
+			F.Intrinsic.Math.Add(V.Local.iubound,1,V.Local.iubound)
+		F.Intrinsic.Control.EndIf
+
+		F.Intrinsic.String.build("{0}-{1}",V.local.sjob,V.local.ssuff,V.uglobal.uwofinal(v.Local.iubound)!JOBSUFFIX)
+
+		'get the order number and order line
+		V.uGlobal.uWOFINAL(V.Local.iubound)!ORDER_NO.Set(V.ODBC.conx!rst.FieldValTrim!SALES_ORDER)
+		V.uGlobal.uWOFINAL(V.Local.iubound)!ORDER_LINE.Set(V.ODBC.conx!rst.FieldValTrim!SALES_ORDER_LINE)
+'		F.Intrinsic.String.Build("Select ORDER_NO, ORDER_LINE from V_ORDER_TO_WO where JOB = '{0}' and SUFFIX = '{1}'",V.Local.sjob,V.Local.ssuff,V.Local.sorderlinesql)
+'		F.Intrinsic.String.Build("{0}{1}Order Number and Line Query: {2}",v.Local.sLogFile,V.Ambient.NewLine,V.Local.sorderlinesql,V.Local.sLogFile)
+		
+'		F.ODBC.Connection!conx.OpenRecordsetRO("rstorderline",V.Local.sorderlinesql)
+'		F.Intrinsic.Control.If(V.ODBC.conx!rstorderline.EOF,=,False)
+'			V.uGlobal.uWOFINAL(v.Local.iubound)!ORDER_LINE.Set(V.ODBC.conx!rstorderline.FieldValTrim!ORDER_LINE)
+'			V.uGlobal.uWOFINAL(v.Local.iubound)!ORDER_NO.Set(V.ODBC.conx!rstorderline.FieldValTrim!ORDER_NO)
+'		F.Intrinsic.Control.EndIf
+'		
+''		F.Intrinsic.String.Build("{0}{1}Order Number and Order Line: {2} - {3}",v.Local.sLogFile,V.Ambient.NewLine,V.uGlobal.uWOFINAL(v.Local.iubound)!ORDER_NO,V.uGlobal.uWOFINAL(v.Local.iubound)!ORDER_LINE,V.Local.sLogFile)
+'		F.ODBC.conx!rstorderline.Close
+
+		'set the time and date
+		V.uGlobal.uWOFinal(v.Local.iubound)!TIME_LAST_CHG.Set(V.Global.Time)
+		V.uGlobal.uWOFinal(v.Local.iubound)!DATE_LAST_CHG.Set(V.Global.Date)
+'		
+		'set the parent as blank
+		V.uGlobal.uWOFINAL(v.Local.iubound)!PARENT.Set("")
+
+		'if ther eare no special instructions set special_instructions as blank
+		F.Intrinsic.Control.If(V.ODBC.conx!rst.FieldValTrim!SPECIAL_INSTRUCTIONS,=,",")
+			V.uGlobal.uWOFinal(v.Local.iubound)!SPECIAL_INSTRUCTIONS.Set("")
+		F.Intrinsic.Control.Else
+			V.uGlobal.uWOFinal(v.Local.iubound)!SPECIAL_INSTRUCTIONS.Set(V.ODBC.conx!rst.FieldValTrim!SPECIAL_INSTRUCTIONS)
+		F.Intrinsic.Control.EndIf
+
+		'set the records found in the UDT 
+		V.uGlobal.uWOFINAL(v.Local.iubound)!LMO.Set(V.ODBC.conx!rst.FieldValTrim!LMO)
+		V.uGlobal.uWOFINAL(v.Local.iubound)!SEQ.Set(V.ODBC.conx!rst.FieldValTrim!SEQ)
+		V.uGlobal.uWOFINAL(v.Local.iubound)!ROUTER.Set(V.ODBC.conx!rst.FieldValTrim!ROUTER)
+		V.uGlobal.uWOFINAL(v.Local.iubound)!UNITS.Set(V.ODBC.conx!rst.FieldValTrim!UNITS)
+		V.uGlobal.uWOFinal(v.Local.iubound)!PRIORITY.Set(V.ODBC.conx!rst.FieldValTrim!PRIORITY)
+		V.uGlobal.uWOFinal(v.Local.iubound)!QTY_ORDER.Set(V.ODBC.conx!rst.FieldValTrim!QTY_ORDER)
+		V.uGlobal.uWOFinal(v.Local.iubound)!DATE_DUE.Set(V.ODBC.conx!rst.FieldValTrim!DATE_DUE)
+		V.uGlobal.uWOFinal(v.Local.iubound)!DATE_OPENED.Set(V.ODBC.conx!rst.FieldValTrim!DATE_OPENED)
+		V.uGlobal.uWOFinal(v.Local.iubound)!PART.Set(V.ODBC.conx!rst.FieldValTrim!PART)
+		V.Local.sparentwosuff.set(V.odbc.conx!rst.fieldvaltrim!PARENT_SUFFIX_PARENT)
+		F.intrinsic.string.build("{0}{1}",V.odbc.conx!rst.fieldvaltrim!PARENT,V.local.sparentwosuff,V.local.sparentwosuff)
+
+		V.uGlobal.uWOFinal(v.Local.iubound)!PARENT.Set(V.local.sparentwosuff)
+
+		V.uGlobal.uWOFinal(v.Local.iubound)!UNIT_COST.Set(V.ODBC.conx!rst.FieldValTrim!AMT_MATERIAL)
+		'subtrack qty completed from qty order for open qty
+		F.Intrinsic.Math.Sub(V.ODBC.conx!rst.FieldValTrim!QTY_ORDER,V.ODBC.conx!rst.FieldValTrim!QTY_COMPLETED,V.uGlobal.uwoFinal(v.Local.iubound)!OPEN_QTY)
+		V.Local.sstatus.Set(V.odbc.conx!rst.FieldValTrim!DATE_CLOSED)
+		'get the status, if the date closed is equal to 0000000 set it as open otherwise closed
+		F.Intrinsic.Control.If(V.odbc.conx!rst.FieldValTrim!DATE_CLOSED,=,"1/1/1900")
+			V.uGlobal.uWOFinal(v.Local.iubound)!STATUS.Set("OPEN")
+		F.Intrinsic.Control.Else
+			V.uGlobal.uWOFinal(v.Local.iubound)!STATUS.Set("CLOSED")
+		F.Intrinsic.Control.EndIf
+
+		F.ODBC.conx!rst.MoveNext
+		Function.Intrinsic.Control.Loop
+
+	F.Intrinsic.Control.Else
+		F.Intrinsic.Variable.UDTFlagOrdinal(V.uGlobal.uWOFINAL,True,V.Local.i)
+
+	F.Intrinsic.Control.EndIf
+'
+	F.ODBC.conx!rst.Close
+	V.Local.iubound.Set(0)
+F.Intrinsic.Control.Next(V.Local.i)
+
+'delete flagged
+F.Intrinsic.Variable.UDTDeleteFlagged(V.uGlobal.uWOFinal)
+'F.Intrinsic.Variable.UDTToStringCSV(V.uGlobal.uWOFinal,"JOBSUFFIX*!*Priority*!*ORDER_NO*!*ORDER_LINE*!*PART*!*SEQ*!*QTY_ORDER*!*DATE_DUE*!*PARENT*!*DATE_OPENED*!*UNIT_COST*!*OPEN_QTY*!*STATUS*!*SPECIAL_INSTRUCTIONS*!*LMO*!*DATE_LAST_CHG*!*TIME_LAST_CHG*!*ROUTER*!*UNITS",V.Local.sTemp)
+'F.Intrinsic.String.Build("{0}{1}WOFinal before Record Deletes: {2}",v.Local.sLogFile,V.Ambient.NewLine,V.Local.sTemp,V.Local.sLogFile)
+F.Intrinsic.Control.For(V.Local.iseqcheck,V.uGlobal.uWOFINAL.LBound,V.uGlobal.uWOFINAL.UBound,1)
+	F.Intrinsic.Control.If(V.uglobal.uWOFINAL(v.Local.iseqcheck)!SEQ,=,"")
+		F.Intrinsic.Variable.UDTFlagOrdinal(V.uGlobal.uWOFINAL,True,V.Local.iseqcheck)
+	F.Intrinsic.Control.EndIf
+F.Intrinsic.Control.Next(V.Local.iseqcheck)
+
+'delete flagged
+F.Intrinsic.Variable.UDTDeleteFlagged(V.uGlobal.uWOFinal)
+'F.Intrinsic.Variable.UDTToStringCSV(v.uGlobal.uWOFinal,"JOBSUFFIX*!*Priority*!*ORDER_NO*!*ORDER_LINE*!*PART*!*SEQ*!*QTY_ORDER*!*DATE_DUE*!*PARENT*!*DATE_OPENED*!*UNIT_COST*!*OPEN_QTY*!*STATUS*!*SPECIAL_INSTRUCTIONS*!*LMO*!*DATE_LAST_CHG*!*TIME_LAST_CHG*!*ROUTER*!*UNITS",V.Local.sTemp)
+'F.Intrinsic.String.Build("{0}{1}WOFinal after Record Deletes: {2}",v.Local.sLogFile,V.Ambient.NewLine,V.Local.sTemp,V.Local.sLogFile)
+
+F.Intrinsic.Control.If(V.uGlobal.uWOFINAL.UBound,=,-1)
+'	F.Intrinsic.File.String2File(V.Local.sLogFilePath,V.Local.sLogFile)
+	F.Intrinsic.Control.ExitSub
+F.Intrinsic.Control.EndIf
+
+'build the filepath
+F.Intrinsic.String.Build("{0}{1}",V.Caller.FilesDir,"\Export\WO",V.Local.swofilepath)
+
+'see if the folder exists if it doesn't create it
+F.Intrinsic.File.Exists(V.Local.swofilepath,V.Local.bexists)
+F.Intrinsic.Control.If(V.Local.bexists,=,False)
+	F.Intrinsic.File.CreateDir(V.Local.swofilepath)
+F.Intrinsic.Control.EndIf
+
+'set the time and date for the file
+V.Local.sfiledate.Set(V.Ambient.Date)
+F.Intrinsic.String.Format(V.Local.sfiledate,"MMDDYYYY",V.Local.sfiledate)
+V.Local.sfiletime.Set(V.Ambient.Time)
+F.Intrinsic.String.Format(V.Local.sfiletime,"HHMMSS",V.Local.sfiletime)
+
+'build the textfile path
+F.Intrinsic.String.Build("{0}\{1}{2}{3}",V.local.swofilepath,V.local.sfiledate,V.local.sfiletime,".txt",V.Local.swoexport)
+
+
+'F.Intrinsic.String.Concat("DELETE FROM ","GCG_3625_WO_Export",V.Local.ssql)
+'F.ODBC.Connection!conX.Execute(V.Local.ssql)
+
+'Change the blank values to NULL
+'F.Intrinsic.Variable.UDTMultiSeekSet(V.uGlobal.uWOFinal!JOBSUFFIX,"",V.uGlobal.uWOFinal!JOBSUFFIX,"NULL")
+F.Intrinsic.Variable.UDTMultiSeekSet(V.uGlobal.uWOFinal!PRIORITY,"",V.uGlobal.uWOFinal!PRIORITY,"NULL")
+F.Intrinsic.Variable.UDTMultiSeekSet(V.uGlobal.uWOFinal!LMO,"",V.uGlobal.uWOFinal!LMO,"NULL")
+F.Intrinsic.Variable.UDTMultiSeekSet(V.uGlobal.uWOFinal!STATUS,"",V.uGlobal.uWOFinal!STATUS,"NULL")
+F.Intrinsic.Variable.UDTMultiSeekSet(V.uGlobal.uWOFinal!SPECIAL_INSTRUCTIONS,"",V.uGlobal.uWOFinal!SPECIAL_INSTRUCTIONS,"NULL")
+F.Intrinsic.Variable.UDTMultiSeekSet(V.uGlobal.uWOFinal!OPEN_QTY,"",V.uGlobal.uWOFinal!OPEN_QTY,"NULL")
+F.Intrinsic.Variable.UDTMultiSeekSet(V.uGlobal.uWOFinal!ORDER_LINE,"",V.uGlobal.uWOFinal!ORDER_LINE,"NULL")
+F.Intrinsic.Variable.UDTMultiSeekSet(V.uGlobal.uWOFinal!ORDER_NO,"",V.uGlobal.uWOFinal!ORDER_NO,"NULL")
+'F.Intrinsic.Variable.UDTMultiSeekSet(V.uGlobal.uWOFinal!PART,"",V.uGlobal.uWOFinal!PART,"NULL")
+F.Intrinsic.Variable.UDTMultiSeekSet(V.uGlobal.uWOFinal!UNIT_COST,"",V.uGlobal.uWOFinal!UNIT_COST,"NULL")
+F.Intrinsic.Variable.UDTMultiSeekSet(V.uGlobal.uWOFinal!DATE_DUE,"",V.uGlobal.uWOFinal!DATE_DUE,"NULL")
+F.Intrinsic.Variable.UDTMultiSeekSet(V.uGlobal.uWOFinal!DATE_OPENED,"",V.uGlobal.uWOFinal!DATE_OPENED,"NULL")
+F.Intrinsic.Variable.UDTMultiSeekSet(V.uGlobal.uWOFinal!PARENT,"",V.uGlobal.uWOFinal!PARENT,"NULL")
+F.Intrinsic.Variable.UDTMultiSeekSet(V.uGlobal.uWOFinal!QTY_ORDER,"",V.uGlobal.uWOFinal!QTY_ORDER,"NULL")
+F.Intrinsic.Variable.UDTMultiSeekSet(V.uGlobal.uWOFinal!SEQ,"",V.uGlobal.uWOFinal!SEQ,"NULL")
+'F.Intrinsic.Variable.UDTMultiSeekSet(V.uGlobal.uWOFinal!ROUTER,"",V.uGlobal.uWOFinal!ROUTER,"NULL")
+F.Intrinsic.Variable.UDTMultiSeekSet(V.uGlobal.uWOFinal!UNITS,"",V.uGlobal.uWOFinal!UNITS,"NULL")
+
+F.Intrinsic.Control.For(V.Local.isortcount,V.uGlobal.uWOFINAL.LBound,V.uGlobal.uWOFINAL.UBound,1)
+	F.Intrinsic.Control.If(V.uGlobal.uWOFINAL(v.Local.isortcount)!PART.trim,=,"")
+		F.Intrinsic.String.Split(V.uGlobal.uWOFINAL(v.Local.isortcount)!JOBSUFFIX,"-",V.Local.sjobsuffix)
+		F.Intrinsic.string.Build("Select PART from V_JOB_HEADER where JOB = '{0}' and SUFFIX = '{1}'",V.Local.sjobsuffix(0),V.Local.sjobsuffix(1),V.Local.ssortsql)
+		F.ODBC.Connection!conx.OpenRecordsetRO("rstsort",V.Local.ssortsql)
+		F.Intrinsic.Control.If(V.ODBC.conx!rstsort.EOF,=,False)
+			V.uGlobal.uWOFINAL(v.Local.isortcount)!ROUTER.Set(V.ODBC.conx!rstsort.FieldValTrim!PART)
+		F.intrinsic.control.endif
+		F.ODBC.Conx!rstsort.Close
+	F.Intrinsic.Control.EndIf
+
+	F.Intrinsic.Control.If(V.uglobal.uWOFINAL(v.Local.isortcount)!SEQ,>,"990000")
+		F.Intrinsic.String.Split(V.uGlobal.uWOFINAL(v.Local.isortcount)!JOBSUFFIX,"-",V.Local.sjobsuffix)
+		F.Intrinsic.string.Build("Select PART from V_JOB_HEADER where JOB = '{0}' and SUFFIX = '{1}'",V.Local.sjobsuffix(0),V.Local.sjobsuffix(1),V.Local.ssortsql)
+		F.ODBC.Connection!conx.OpenRecordsetRO("rstsort",V.Local.ssortsql)
+		F.Intrinsic.Control.If(V.ODBC.conx!rstsort.EOF,=,False)
+			V.uGlobal.uWOFINAL(v.Local.isortcount)!ROUTER.Set(V.ODBC.conx!rstsort.FieldValTrim!PART)
+		F.intrinsic.control.endif
+		F.ODBC.Conx!rstsort.Close
+	F.Intrinsic.Control.EndIf
+
+	F.Intrinsic.Control.If(V.uglobal.uWOFINAL(v.Local.isortcount)!ROUTER.trim,=,"")
+		F.Intrinsic.String.Split(V.uGlobal.uWOFINAL(v.Local.isortcount)!JOBSUFFIX,"-",V.Local.sjobsuffix)
+		F.Intrinsic.string.Build("Select PART from V_JOB_HEADER where JOB = '{0}' and SUFFIX = '{1}'",V.Local.sjobsuffix(0),V.Local.sjobsuffix(1),V.Local.ssortsql)
+		F.ODBC.Connection!conx.OpenRecordsetRO("rstsort",V.Local.ssortsql)
+		F.Intrinsic.Control.If(V.ODBC.conx!rstsort.EOF,=,False)
+			V.uGlobal.uWOFINAL(v.Local.isortcount)!ROUTER.Set(V.ODBC.conx!rstsort.FieldValTrim!PART)
+		F.intrinsic.control.endif
+		F.ODBC.Conx!rstsort.Close
+	F.Intrinsic.Control.EndIf
+
+F.Intrinsic.Control.Next(V.Local.isortcount)
+
+F.Intrinsic.Variable.UDTMultiSeekSet(V.uGlobal.uWOFinal!ROUTER,"",V.uGlobal.uWOFinal!ROUTER,"NULL")
+F.Intrinsic.Variable.UDTMultiSeekSet(V.uGlobal.uWOFinal!JOBSUFFIX,"",V.uGlobal.uWOFinal!JOBSUFFIX,"NULL")
+F.Intrinsic.Variable.UDTMultiSeekSet(V.uGlobal.uWOFinal!PART,"",V.uGlobal.uWOFinal!PART,"NULL")
+
+
+'save the UDT as a string then save the string as a textfile
+f.Intrinsic.Variable.udttostring(v.uGlobal.uWOFinal,"JOBSUFFIX*!*SEQ*!*LMO*!*ORDER_NO*!*ORDER_LINE*!*PRIORITY*!*PART*!*ROUTER*!*QTY_ORDER*!*DATE_DUE*!*STATUS*!*PARENT*!*SPECIAL_INSTRUCTIONS*!*UNIT_COST*!*DATE_OPENED*!*OPEN_QTY*!*UNITS",v.Ambient.NewLine,"~",v.Local.sret)
+
+'write the textfile
+F.Intrinsic.File.String2File(V.Local.swoexport,V.Local.sret)
+
+'set the uWO udt field references needed
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uWO!PRIORITY,"")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uWO!ORDER_NO,"")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uWO!ORDER_LINE,"")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uWO!PART,"")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uWO!SEQ,"")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uWO!QTY_ORDER,"")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uWO!DATE_DUE,"")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uWO!PARENT,"")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uWO!DATE_OPENED,"")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uWO!UNIT_COST,"")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uWO!OPEN_QTY,"")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uWO!STATUS,"")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uWO!SPECIAL_INSTRUCTIONS,"")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uWO!LMO,"")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uWO!DATE_LAST_CHG,"")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uWO!TIME_LAST_CHG,"")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uWO!ROUTER,"")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uWO!UNITS,"")
+
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uWOFINAL!PRIORITY,"")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uWOFINAL!ORDER_NO,"")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uWOFINAL!ORDER_LINE,"")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uWOFINAL!PART,"")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uWOFINAL!SEQ,"")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uWOFINAL!QTY_ORDER,"")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uWOFINAL!DATE_DUE,"")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uWOFINAL!PARENT,"")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uWOFINAL!DATE_OPENED,"")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uWOFINAL!UNIT_COST,"")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uWOFINAL!OPEN_QTY,"")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uWOFINAL!STATUS,"")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uWOFINAL!SPECIAL_INSTRUCTIONS,"")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uWOFINAL!LMO,"")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uWOFINAL!DATE_LAST_CHG,"")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uWOFINAL!TIME_LAST_CHG,"")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uWOFINAL!JOBSUFFIX,"")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uWOFINAL!ROUTER,"")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uWOFINAL!UNITS,"")
+'
+'F.Intrinsic.Variable.UDTFlagAll(V.uGlobal.uWO)
+'F.Intrinsic.Variable.UDTDeleteFlagged(V.uGlobal.uWO)
+'F.Intrinsic.Variable.UDTFlagAll(V.uGlobal.uWOFinal)
+'F.Intrinsic.Variable.UDTDeleteFlagged(V.uGlobal.uWOFinal)
+
+'V.uGlobal.uWO.Redim(-1,-1)
+V.uGlobal.uWOFinal.Redim(-1,-1)
+
+'F.Intrinsic.File.String2File(V.Local.sLogFilePath,V.Local.sLogFile)
+
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("WO_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	Function.Intrinsic.String.Concat("Project: WO.gas",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	F.Intrinsic.Control.CallSub(Unload)
+Function.Intrinsic.Control.EndIf
+
+
+
+Program.Sub.WO.End
+
+Program.Sub.Ship.Start
+F.Intrinsic.Control.SetErrorHandler("Ship_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String)
+V.Local.scurrentdate.Declare(String)
+V.Local.scurrenttime.Declare(String)
+V.Local.ssql.declare(String)
+V.Local.i.Declare(Long)
+V.Local.slinessql.Declare(String)
+V.Local.slogsql.Declare(String)
+V.Local.snamecustsql.Declare(String)
+V.Local.sshipexport.Declare(String)
+V.Local.sshipfilepath.Declare(String)
+V.Local.sfiletime.Declare(String)
+V.Local.sfiledate.Declare(String)
+V.Local.sret.declare(String)
+V.Local.bexists.Declare(Boolean)
+V.Local.ssql2.Declare(String)
+V.Local.ssql3.Declare(String)
+V.Local.scust.Declare(String)
+V.Local.shour.Declare(String)
+V.Local.spm.Declare(String)
+V.Local.dLastRanDateTime.Declare(Date)
+V.Local.sLastRanDate.Declare(String)
+V.Local.sLastRanTime.Declare(String)
+
+'Getting last date time ran, ITEM_ID = 4 is the last time Ship export was ran
+V.Local.ssql.Set("Select DATE_LAST_RAN from GCG_3625_LASTRAN WHERE ITEM_ID = 4")
+F.ODBC.Connection!conx.OpenLocalRecordsetRW("rst",V.Local.ssql)
+F.Intrinsic.Control.If(V.ODBC.conx!rst.EOF,=,True)
+	F.ODBC.conx!rst.AddNew
+	F.ODBC.conx!rst.Set!ITEM_ID(4)
+	V.Local.sLastRanDate.Set("150101")
+	V.Local.sLastRanTime.Set("00000000")
+F.Intrinsic.Control.Else
+	'Getting date and formatting
+	F.Intrinsic.Date.DateComp(V.ODBC.conx!rst.FieldVal!DATE_LAST_RAN,V.Local.dLastRanDateTime)
+	F.Intrinsic.String.Format(V.Local.dLastRanDateTime,"yyyymmdd",V.Local.sLastRanDate)
+
+	'Getting time and formatting
+	F.Intrinsic.Date.TimeComp(V.ODBC.conx!rst.FieldVal!DATE_LAST_RAN,V.Local.dLastRanDateTime)
+	F.Intrinsic.String.Format(V.Local.dLastRanDateTime,"HhNnSs",V.Local.sLastRanTime)
+	F.Intrinsic.String.RPad(V.Local.sLastRanTime,"0",8,V.Local.sLastRanTime)
+F.Intrinsic.Control.EndIf
+
+F.Intrinsic.String.Build("Select ORDER_NO,ORDER_SUFFIX, SHIP_VIA,TRACKING_NO  from SHIPMENT_HEADER where RECORD_TYPE = 'A' and TIME_LAST_CHG > '{0}' and DATE_LAST_CHG >= '{1}'",V.Local.sLastRanTime,V.Local.sLastRanDate,V.Local.ssql2)
+F.ODBC.Connection!conx.OpenRecordsetRO("rst2",V.Local.sSql2)
+
+'Update datetime last ran
+F.ODBC.conx!rst.Set!DATE_LAST_RAN(V.Ambient.Now)
+F.ODBC.conx!rst.Update
+F.ODBC.conx!rst.Close
+
+F.Intrinsic.Control.if(V.ODBC.conX!rst2.EOF,=,False)
+	F.Intrinsic.Variable.LoadUDTFromRecordset("conx","rst2","uglobal.uSHIP","false",100000)
+F.Intrinsic.Control.EndIf
+
+'close conneciton
+F.ODBC.conx!rst2.Close
+
+'Make sure UDT is not empty
+F.Intrinsic.Control.If(V.uGlobal.uSHIP.UBound,=,0,AND,V.uGlobal.uSHIP(0)!ORDER_NO,=,"")
+	F.Intrinsic.Control.ExitSub
+F.Intrinsic.Control.EndIf
+
+
+'set the uShip udt field references needed
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uShip!QTY_SHIPPED,"QTY_SHIPPED")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uShip!DATE_SHIP,"DATE_SHIP")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uShip!TIME_SHIP,"TIME_SHIP")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uShip!NAME_CUSTOMER_SHIP,"NAME_CUSTOMER_SHIP")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uShip!TIME_LAST_CHG,"TIME_LAST_CHG")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uShip!DATE_LAST_CHG,"DATE_LAST_CHG")
+
+'loop through the UDT and see if the TIME_LAST_CHG is greater than the TIME_LAST_CHG for that part, rev and loc in the custom table GCG_3625_INV_Export
+F.Intrinsic.Control.For(V.Local.i,V.uGlobal.uShip.LBound,V.uGlobal.uShip.UBound,1)
+
+	'set the date/time
+	V.uGlobal.uShip(v.Local.i)!TIME_LAST_CHG.Set(V.Global.Time)
+	V.uGlobal.uShip(v.Local.i)!DATE_LAST_CHG.Set(V.Global.Date)
+
+	'get the date ship and qty shipped from shipment lines
+	F.Intrinsic.String.Build("Select QTY_SHIPPED,DATE_SHIP, ADD_BY_TIME as TIME_SHIP from V_SHIPMENT_LINES where ORDER_NO = '{0}' and ORDER_SUFFIX = '{1}'",V.uGlobal.uShip(v.Local.i)!ORDER_NO,V.uGlobal.uShip(v.Local.i)!ORDER_SUFFIX,V.Local.slinessql)
+	F.ODBC.Connection!conx.OpenRecordsetRO("rstlines",V.Local.slinesSql)
+	F.Intrinsic.Control.if(V.ODBC.conX!rstlines.EOF,=,False)
+		V.uGlobal.uShip(v.Local.i)!QTY_SHIPPED.Set(V.ODBC.conx!rstlines.FieldValTrim!QTY_SHIPPED)
+		V.uGlobal.uShip(v.Local.i)!DATE_SHIP.Set(V.ODBC.conx!rstlines.FieldValTrim!DATE_SHIP)
+'		V.uGlobal.uShip(v.Local.i)!TIME_SHIP.Set(V.ODBC.conx!rstlines.FieldValTrim!TIME_SHIP)
+		F.Intrinsic.String.Right(V.ODBC.conx!rstlines.FieldValTrim!TIME_SHIP,10,V.uGlobal.uShip(v.Local.i)!TIME_SHIP)
+	F.Intrinsic.Control.EndIf
+	F.ODBC.conx!rstlines.Close
+
+	'get the name_customer_ship
+	F.intrinsic.string.build("select NAME_CUSTOMER_SHIP from V_SHIPMENT_SHIPTO where ORDER_NO = '{0}' and ORDER_SUFFIX = '{1}'",V.uGlobal.uShip(v.Local.i)!ORDER_NO,V.uglobal.uShip(v.local.i)!ORDER_SUFFIX,V.Local.snamecustsql)
+	F.ODBC.Connection!conx.OpenRecordsetRO("rstname",V.Local.snamecustsql)
+	F.Intrinsic.Control.if(V.ODBC.conX!rstname.EOF,=,False)
+		'remove any commas in the customers name
+		V.Local.scust.Set(V.ODBC.conx!rstname.FieldValTrim!NAME_CUSTOMER_SHIP)
+		F.Intrinsic.String.Replace(V.Local.scust,",","",V.Local.scust)
+		V.uGlobal.uShip(v.Local.i)!NAME_CUSTOMER_SHIP.Set(V.local.scust)
+	F.Intrinsic.Control.EndIf
+	F.ODBC.conx!rstname.Close
+
+F.Intrinsic.Control.Next(V.Local.i)
+
+'build the filepath
+F.Intrinsic.String.Build("{0}{1}",V.Caller.FilesDir,"\Export\Ship",V.Local.sshipfilepath)
+
+'see if the folder exists if it doesn't create it
+F.Intrinsic.File.Exists(V.Local.sshipfilepath,V.Local.bexists)
+F.Intrinsic.Control.If(V.Local.bexists,=,False)
+	F.Intrinsic.File.CreateDir(V.Local.sshipfilepath)
+F.Intrinsic.Control.EndIf
+
+'set the time and date for the file
+V.Local.sfiledate.Set(V.Ambient.Date)
+F.Intrinsic.String.Format(V.Local.sfiledate,"MMDDYYYY",V.Local.sfiledate)
+V.Local.sfiletime.Set(V.Ambient.Time)
+F.Intrinsic.String.Format(V.Local.sfiletime,"HHMMSS",V.Local.sfiletime)
+
+'build the textfile path
+F.Intrinsic.String.Build("{0}\{1}{2}{3}",V.local.sshipfilepath,V.local.sfiledate,V.local.sfiletime,".txt",V.Local.sshipexport)
+'F.Intrinsic.File.String2File(V.Local.sinvexport,V.Local.sret)
+
+F.ODBC.Connection!conx.OpenRecordsetRW("rstdelete","GCG_3625_Ship_Export")
+F.Intrinsic.String.Concat("DELETE from"," GCG_3625_SHIP_Export",V.Local.ssql3)
+F.ODBC.connection!conx.Execute(V.Local.ssql3)
+F.ODBC.conx!rstdelete.Close
+
+F.Intrinsic.Control.If(V.uGlobal.uShip.UBound,=,-1)
+	F.Intrinsic.Control.ExitSub
+F.Intrinsic.Control.EndIf
+
+'open the recordset and delete everything from the custom table then save the current UDT to it
+F.ODBC.Connection!conx.OpenRecordsetRW("rst","GCG_3625_Ship_Export")
+'F.Intrinsic.String.Concat("DELETE from"," GCG_3625_Ship_Export",V.Local.ssql)
+'F.ODBC.connection!conx.Execute(V.Local.ssql)
+F.Intrinsic.variable.SaveUDTToRecordSet("conx","rst","v.uglobal.uShip")
+F.ODBC.conx!rst.Close
+
+F.Intrinsic.Variable.UDTMultiSeekSet(V.uGlobal.uSHIP!ORDER_NO,"",V.uGlobal.uSHIP!ORDER_NO,"NULL")
+F.Intrinsic.Variable.UDTMultiSeekSet(V.uGlobal.uSHIP!DATE_SHIP,"",V.uGlobal.uSHIP!DATE_SHIP,"NULL")
+F.Intrinsic.Variable.UDTMultiSeekSet(V.uGlobal.uSHIP!TIME_SHIP,"",V.uGlobal.uSHIP!TIME_SHIP,"NULL")
+F.Intrinsic.Variable.UDTMultiSeekSet(V.uGlobal.uSHIP!NAME_CUSTOMER_SHIP,"",V.uGlobal.uSHIP!NAME_CUSTOMER_SHIP,"NULL")
+F.Intrinsic.Variable.UDTMultiSeekSet(V.uGlobal.uSHIP!QTY_SHIPPED,"",V.uGlobal.uSHIP!QTY_SHIPPED,"NULL")
+F.Intrinsic.Variable.UDTMultiSeekSet(V.uGlobal.uSHIP!SHIP_VIA,"",V.uGlobal.uSHIP!SHIP_VIA,"NULL")
+F.Intrinsic.Variable.UDTMultiSeekSet(V.uGlobal.uSHIP!TRACKING_NO,"",V.uGlobal.uSHIP!TRACKING_NO,"NULL")
+
+'save the UDT as a string then save the string as a textfile
+'f.Intrinsic.Variable.udttostring(v.uGlobal.uINV,"PART*!*LOCATION*!*DESCRIPTION*!*REV*!*PRODUCT_LINE*!*CODE_SORT*!*QTY_ONHAND*!*AMT_COST*!*DATE_LAST_CHG*!*TIME_LAST_CHG*!*SALES_ACCOUNT*!*TEXT_INFO1",v.Ambient.NewLine,",",v.Local.sret)
+f.Intrinsic.Variable.udttostring(v.uGlobal.uShip,"ORDER_NO*!*ORDER_SUFFIX*!*DATE_SHIP*!*TIME_SHIP*!*SHIP_VIA*!*NAME_CUSTOMER_SHIP*!*QTY_SHIPPED*!*TRACKING_NO",v.Ambient.NewLine,"~",v.Local.sret)
+
+F.Intrinsic.File.String2File(V.Local.sshipexport,V.Local.sret)
+
+'set the uShip udt field references needed
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uShip!QTY_SHIPPED,"")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uShip!DATE_SHIP,"")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uShip!TIME_SHIP,"")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uShip!NAME_CUSTOMER_SHIP,"")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uShip!TIME_LAST_CHG,"")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uShip!DATE_LAST_CHG,"")
+'
+'F.Intrinsic.Variable.UDTFlagAll(V.uGlobal.uShip)
+'F.Intrinsic.Variable.UDTDeleteFlagged(V.uGlobal.uShip)
+
+V.uGlobal.uShip.Redim(-1,-1)
+
+
+F.Intrinsic.Control.ExitSub
+F.Intrinsic.Control.Label("Ship_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	Function.Intrinsic.String.Concat("Project: GCG_3625_Export.gas",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	F.Intrinsic.Control.CallSub(Unload)
+Function.Intrinsic.Control.EndIf
+
+
+Program.Sub.Ship.End
+
+Program.Sub.PO.Start
+F.Intrinsic.Control.SetErrorHandler("PO_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String)
+V.Local.scurrentdate.Declare(String)
+V.Local.scurrenttime.Declare(String)
+V.Local.ssql.Declare(String)
+V.Local.i.Declare(Long)
+V.Local.spohistsql.Declare(String)
+V.Local.sfiletime.Declare(String)
+V.Local.sfiledate.Declare(String)
+V.Local.sret.Declare(String)
+V.Local.bexists.Declare(Boolean)
+V.Local.sPOexport.Declare(String)
+V.Local.sPOfilepath.Declare(String)
+V.Local.ssql2.Declare(String)
+V.Local.ssql3.Declare(String)
+V.Local.shour.Declare(String)
+V.Local.spm.Declare(String)
+V.Local.sampledate.Declare(String)
+V.Local.dLastRanDateTime.Declare(Date)
+V.Local.sLastRanDate.Declare(String)
+V.Local.sLastRanTime.Declare(String)
+
+V.Local.sampledate.Set("01/01/1900")
+
+'Getting last date time ran, ITEM_ID = 4 is the last time Ship export was ran
+V.Local.ssql.Set("Select DATE_LAST_RAN from GCG_3625_LASTRAN WHERE ITEM_ID = 5")
+F.ODBC.Connection!conx.OpenLocalRecordsetRW("rst",V.Local.ssql)
+F.Intrinsic.Control.If(V.ODBC.conx!rst.EOF,=,True)
+	F.ODBC.conx!rst.AddNew
+	F.ODBC.conx!rst.Set!ITEM_ID(5)
+	V.Local.sLastRanDate.Set("150101")
+	V.Local.sLastRanTime.Set("00000000")
+F.Intrinsic.Control.Else
+	'Getting date and formatting
+	F.Intrinsic.Date.DateComp(V.ODBC.conx!rst.FieldVal!DATE_LAST_RAN,V.Local.dLastRanDateTime)
+	F.Intrinsic.String.Format(V.Local.dLastRanDateTime,"yyyy-mm-dd",V.Local.sLastRanDate)
+
+	'Getting time and formatting
+	F.Intrinsic.Date.TimeComp(V.ODBC.conx!rst.FieldVal!DATE_LAST_RAN,V.Local.dLastRanDateTime)
+	F.Intrinsic.String.Format(V.Local.dLastRanDateTime,"Hh:Nn:Ss",V.Local.sLastRanTime)
+	F.Intrinsic.String.RPad(V.Local.sLastRanTime,"0",8,V.Local.sLastRanTime)
+F.Intrinsic.Control.EndIf
+
+F.Intrinsic.String.Build("Select Distinct PURCHASE_ORDER, RECORD_NO from v_PO_LINES where PO_TYPE = 'O' and DATE_LAST_CHG >= '{0}' and TIME_LAST_CHG >= '{1}' ",V.Local.sLastRanDate,V.Local.sLastRanTime,V.Local.ssql2)
+F.ODBC.Connection!conx.OpenRecordsetRO("rst2",V.Local.sSql2)
+
+'Update datetime last ran
+F.ODBC.conx!rst.Set!DATE_LAST_RAN(V.Ambient.Now)
+F.ODBC.conx!rst.Update
+F.ODBC.conx!rst.Close
+
+F.Intrinsic.Control.if(V.ODBC.conX!rst2.EOF,=,False)
+	F.Intrinsic.Variable.LoadUDTFromRecordset("conx","rst2","uglobal.uPO","false",100000)
+F.Intrinsic.Control.EndIf
+
+'close conneciton
+F.ODBC.conx!rst2.Close
+
+'Make sure UDT is not empty
+F.Intrinsic.Control.If(V.uGlobal.uPO.UBound,=,0,AND,V.uGlobal.v(0)!PURCHASE_ORDER,=,"")
+	F.Intrinsic.Control.ExitSub
+F.Intrinsic.Control.EndIf
+
+
+'set the uPO udt field references needed
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uPO!QTY_REJECT,"QTY_REJECT")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uPO!USER_ID,"USER_ID")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uPO!PO_TYPE,"PO_TYPE")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uPO!DATE_LAST_CHG,"DATE_LAST_CHG")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uPO!TIME_LAST_CHG,"TIME_LAST_CHG")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uPO!PART,"PART")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uPO!REV,"REV")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uPO!DATE_RECEIVED,"DATE_RECEIVED")
+
+'loop through the UDT and see if the TIME_LAST_CHG is greater than the TIME_LAST_CHG for that part, rev and loc in the custom table GCG_3625_INV_Export
+F.Intrinsic.Control.For(V.Local.i,V.uGlobal.uPO.LBound,V.uGlobal.uPO.UBound,1)
+
+	'get the sales account from qty rejected, userid, potype where product_line is equal to the uPO UDT product line
+	'NOTE: the QTY_REJECT is actually QTY_ORDER
+	F.Intrinsic.String.Build("Select QTY_ORDER as QTY_REJECT,  LEFT(PART, 17) as PART, RIGHT(PART,3) as REV, CHANGED_BY as USER_ID, PO_TYPE, QTY_RECEIVED, VENDOR  from V_PO_LINES where PURCHASE_ORDER = '{0}' and RECORD_NO = '{1}'",V.uGlobal.uPO(v.Local.i)!PURCHASE_ORDER,V.uglobal.upo(v.local.i)!RECORD_NO,V.Local.spohistsql)
+	F.ODBC.Connection!conx.OpenRecordsetRO("rstpohist",V.Local.spohistSql)
+	F.Intrinsic.Control.if(V.ODBC.conX!rstpohist.EOF,=,False)
+		'set the qty reject, user id, and po type
+		V.uGlobal.uPO(v.Local.i)!QTY_REJECT.Set(V.ODBC.conx!rstpohist.FieldValTrim!QTY_REJECT)
+		V.uGlobal.uPO(v.Local.i)!USER_ID.Set(V.ODBC.conx!rstpohist.FieldValTrim!USER_ID)
+		V.uGlobal.uPO(v.Local.i)!PART.Set(V.ODBC.conx!rstpohist.FieldValTrim!PART)
+		V.uGlobal.uPO(v.Local.i)!REV.Set(V.ODBC.conx!rstpohist.FieldValTrim!REV)
+'		V.uGlobal.uPO(v.Local.i)!DATE_RECEIVED.Set(V.ODBC.conx!rstpohist.FieldValTrim!DATE_RECEIVED)
+		V.uGlobal.uPO(v.Local.i)!PO_TYPE.Set(V.ODBC.conx!rstpohist.FieldValTrim!PO_TYPE)
+'		V.uGlobal.uPO(v.Local.i)!QTY_REJECT.Set(V.ODBC.conx!rstpohist.FieldValTrim!QTY_REJECT)
+		V.uGlobal.uPO(v.Local.i)!VENDOR.Set(V.ODBC.conx!rstpohist.FieldValTrim!VENDOR)
+	F.Intrinsic.Control.EndIf
+	F.ODBC.conx!rstpohist.Close
+
+	'select the date order as the date received, customer wanted this change right before their go-life
+	F.Intrinsic.String.Build("Select DATE_ORDER as DATE_RECEIVED from V_PO_HEADER where PURCHASE_ORDER = '{0}' and DATE_RECEIVED <> '{1}'",V.uGlobal.uPO(v.Local.i)!PURCHASE_ORDER,V.Local.sampledate.PervasiveDate,V.Local.spohistsql)
+	F.ODBC.Connection!conx.OpenRecordsetRO("rstpohist",V.Local.spohistSql)
+	F.Intrinsic.Control.if(V.ODBC.conX!rstpohist.EOF,=,False)
+'		f.Intrinsic.Control.If(v.oV.ODBC.conx!rstpohist.FieldValTrim!DATE_RECEIVED,=,
+		V.uGlobal.uPO(v.Local.i)!DATE_RECEIVED.Set(V.ODBC.conx!rstpohist.FieldValTrim!DATE_RECEIVED)
+	F.Intrinsic.Control.EndIf
+	F.ODBC.conx!rstpohist.Close
+
+F.Intrinsic.Control.Next(V.Local.i)
+
+'build the filepath
+F.Intrinsic.String.Build("{0}{1}",V.Caller.FilesDir,"\Export\PO",V.Local.sPOfilepath)
+
+'see if the folder exists if it doesn't create it
+F.Intrinsic.File.Exists(V.Local.sPOfilepath,V.Local.bexists)
+F.Intrinsic.Control.If(V.Local.bexists,=,False)
+	F.Intrinsic.File.CreateDir(V.Local.sPOfilepath)
+F.Intrinsic.Control.EndIf
+
+'set the time and date for the file
+V.Local.sfiledate.Set(V.Ambient.Date)
+F.Intrinsic.String.Format(V.Local.sfiledate,"MMDDYYYY",V.Local.sfiledate)
+V.Local.sfiletime.Set(V.Ambient.Time)
+F.Intrinsic.String.Format(V.Local.sfiletime,"HHMMSS",V.Local.sfiletime)
+
+'build the textfile path
+F.Intrinsic.String.Build("{0}\{1}{2}{3}",V.local.sPOfilepath,V.local.sfiledate,V.local.sfiletime,".txt",V.Local.sPOexport)
+'F.Intrinsic.File.String2File(V.Local.sinvexport,V.Local.sret)
+
+F.Intrinsic.Control.If(V.uGlobal.uPO.UBound,=,-1)
+	F.Intrinsic.Control.ExitSub
+F.Intrinsic.Control.EndIf
+
+'F.Intrinsic.Variable.UDTMultiSeekSet(V.uGlobal.uPO!RECEIVER_NO,"",V.uGlobal.uPO!RECEIVER_NO,"NULL")
+F.Intrinsic.Variable.UDTMultiSeekSet(V.uGlobal.uPO!DATE_RECEIVED,"",V.uGlobal.uPO!DATE_RECEIVED,"NULL")
+F.Intrinsic.Variable.UDTMultiSeekSet(V.uGlobal.uPO!PART,"",V.uGlobal.uPO!PART,"NULL")
+F.Intrinsic.Variable.UDTMultiSeekSet(V.uGlobal.uPO!REV,"",V.uGlobal.uPO!REV,"NULL")
+F.Intrinsic.Variable.UDTMultiSeekSet(V.uGlobal.uPO!PURCHASE_ORDER,"",V.uGlobal.uPO!PURCHASE_ORDER,"NULL")
+F.Intrinsic.Variable.UDTMultiSeekSet(V.uGlobal.uPO!VENDOR,"",V.uGlobal.uPO!VENDOR,"NULL")
+F.Intrinsic.Variable.UDTMultiSeekSet(V.uGlobal.uPO!QTY_RECEIVED,"",V.uGlobal.uPO!QTY_RECEIVED,"NULL")
+F.Intrinsic.Variable.UDTMultiSeekSet(V.uGlobal.uPO!QTY_REJECT,"",V.uGlobal.uPO!QTY_REJECT,"NULL")
+F.Intrinsic.Variable.UDTMultiSeekSet(V.uGlobal.uPO!USER_ID,"",V.uGlobal.uPO!USER_ID,"NULL")
+F.Intrinsic.Variable.UDTMultiSeekSet(V.uGlobal.uPO!PO_TYPE,"",V.uGlobal.uPO!PO_TYPE,"NULL")
+
+'save the UDT as a string then save the string as a textfile
+'f.Intrinsic.Variable.udttostring(v.uGlobal.uPO,"PART*!*LOCATION*!*DESCRIPTION*!*REV*!*PRODUCT_LINE*!*CODE_SORT*!*QTY_ONHAND*!*AMT_COST*!*DATE_LAST_CHG*!*TIME_LAST_CHG*!*SALES_ACCOUNT*!*TEXT_INFO1",v.Ambient.NewLine,",",v.Local.sret)
+f.Intrinsic.Variable.udttostring(v.uGlobal.uPO,"DATE_RECEIVED*!*PART*!*REV*!*PURCHASE_ORDER*!*RECORD_NO*!*VENDOR*!*QTY_RECEIVED*!*QTY_REJECT*!*USER_ID*!*PO_TYPE",v.Ambient.NewLine,"~",v.Local.sret)
+
+F.Intrinsic.File.String2File(V.Local.sPOexport,V.Local.sret)
+
+'set the uPO udt field references needed
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uPO!QTY_REJECT,"")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uPO!USER_ID,"")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uPO!PO_TYPE,"")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uPO!DATE_LAST_CHG,"")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uPO!TIME_LAST_CHG,"")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uPO!PART,"")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uPO!REV,"")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uPO!DATE_RECEIVED,"")
+
+V.uGlobal.uPO.Redim(-1,-1)
+
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("PO_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	Function.Intrinsic.String.Concat("Project: GCG_3625_Export.gas",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	F.Intrinsic.Control.CallSub(Unload)
+Function.Intrinsic.Control.EndIf
+
+
+Program.Sub.PO.End
+
+program.sub.cmd1_click.start
+F.Intrinsic.Control.SetErrorHandler("cmd1_click_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String)
+
+'see what the value is in the drop down list and call the appropriate subroutine
+F.Intrinsic.Control.If(V.Screen.Form1!dropdownlist1.text,=,"")
+	F.intrinsic.UI.Msgbox("No Category Selected")
+	F.Intrinsic.Control.ExitSub
+F.Intrinsic.Control.ElseIf(V.Screen.Form1!dropdownlist1.text,=,"BOM")
+	Gui.Form1..Visible(false)
+	F.Intrinsic.Control.CallSub(Bom)
+F.Intrinsic.Control.ElseIf(V.Screen.Form1!dropdownlist1.text,=,"Inventory")
+	Gui.Form1..Visible(false)
+	F.Intrinsic.Control.CallSub(Inv)
+F.Intrinsic.Control.ElseIf(V.Screen.Form1!dropdownlist1.text,=,"Sales Orders")
+	Gui.Form1..Visible(false)
+	F.Intrinsic.Control.CallSub(So)
+F.Intrinsic.Control.ElseIf(V.Screen.Form1!dropdownlist1.text,=,"Work Orders")
+	Gui.Form1..Visible(false)
+	F.Intrinsic.Control.CallSub(Wo)
+F.Intrinsic.Control.ElseIf(V.Screen.Form1!dropdownlist1.text,=,"Shipments")
+	Gui.Form1..Visible(false)
+	F.Intrinsic.Control.CallSub(Ship)
+F.Intrinsic.Control.ElseIf(V.Screen.Form1!dropdownlist1.text,=,"Purchase Orders")
+	Gui.Form1..Visible(false)
+	F.Intrinsic.Control.CallSub(Po)
+F.Intrinsic.Control.EndIf
+
+	F.Intrinsic.UI.Msgbox("Export Complete")
+
+F.Intrinsic.Control.CallSub(Unload)
+
+F.Intrinsic.Control.ExitSub
+
+	F.Intrinsic.Control.Label("cmd1_click_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	Function.Intrinsic.String.Concat("Project: GCG_3625_Export_CMI.gas",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	F.Intrinsic.Control.CallSub(Unload)
+Function.Intrinsic.Control.EndIf
+
+
+program.sub.cmd1_click.End
+
+program.sub.form1_unload.start
+F.Intrinsic.Control.SetErrorHandler("form1_unload_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String)
+
+'close form and end program
+Gui.Form1..Visible(false)
+F.Intrinsic.Control.CallSub(Unload)
+
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("form1_unload_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	Function.Intrinsic.String.Concat("Project: GCG_3625_Export_CMI.gas",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	F.Intrinsic.Control.End
+
+Function.Intrinsic.Control.EndIf
+
+
+program.sub.form1_unload.End
+
+Program.Sub.SetLastChgNewWO.Start
+F.Intrinsic.Control.SetErrorHandler("SetLastChgNewWO_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String)
+V.Local.sSql.Declare(String)
+
+'Sets the last chg date on any work order in which it is not found in the last chg table.  This will typically be newly created work orders
+'Getting list of job that don't have a last change date
+V.Local.sSql.Set("Select  JOB, SUFFIX, DATE_LAST_CHG  from V_JOB_HEADER left outer join GCG_3625_WO_LASTCHG on V_JOB_HEADER.JOB = GCG_3625_WO_LASTCHG.JOB and V_JOB_HEADER.SUFFIX = GCG_3625_WO_LASTCHG.SUFFIX Where DATE_LAST_CHG is NULL")
+F.ODBC.Connection!conx.OpenLocalRecordsetRO("rst",V.Local.sSql)
+F.Intrinsic.Control.DoUntil(V.ODBC.conx!rst.EOF,=,True)
+	'Add a date last change record for each job into the last chg table.
+	F.Intrinsic.String.Build("Select * From GCG_3625_WO_LASTCHG where JOB = '{0}' and SUFFIX = '{1}'",V.ODBC.conx!rst.FieldValTrim!JOB,V.ODBC.conx!rst.FieldValTrim!SUFFIX,V.Local.sSql)
+	F.ODBC.Connection!conx.OpenLocalRecordsetRW("rstWOLastChg",V.Local.sSql)
+	F.Intrinsic.Control.If(V.ODBC.conx!rstWOLastChg.EOF,=,True)
+		F.ODBC.conx!rstWOLastChg.AddNew
+		F.ODBC.conx!rstWOLastChg.Set!JOB(V.ODBC.conx!rst.FieldValTrim!JOB)
+		F.ODBC.conx!rstWOLastChg.Set!SUFFIX(V.ODBC.conx!rst.FieldValTrim!SUFFIX)
+	F.Intrinsic.Control.EndIf
+	F.ODBC.conx!rstWOLastChg.Set!DATE_LAST_CHG(V.Ambient.Now)
+	F.ODBC.conx!rstWOLastChg.Update
+	F.ODBC.conx!rstWOLastChg.Close
+	F.ODBC.conx!rst.MoveNext
+F.Intrinsic.Control.Loop
+F.ODBC.conx!rst.Close
+
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("SetLastChgNewWO_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	Function.Intrinsic.String.Concat("Project: GCG_3625_Export_CMI.gas",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+Function.Intrinsic.Control.EndIf
+
+
+Program.Sub.SetLastChgNewWO.End
+
+Program.Sub.IsRunning.Start
+
+F.Intrinsic.Control.SetErrorHandler("IsRunning_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String)
+V.Local.sFile.Declare(String)
+V.Local.bExists.Declare(Boolean)
+V.Local.iPID.Declare(Long)
+V.Local.iRet.Declare(Long)
+
+V.Local.iPID.Set(V.Ambient.PID)
+
+'check to see if program is already running.
+
+F.Intrinsic.String.Build("{0}\3625_EXPORT",V.Caller.FilesDir,V.Local.sFile)
+F.Intrinsic.File.Exists(V.Local.sFile,V.Local.bExists)
+F.Intrinsic.Control.If(V.Local.bExists,=,False)
+	'Create Program Status file to let it know its running or not every day.
+	F.Intrinsic.File.String2File(V.Local.sFile,V.Local.iPID.String)
+
+F.Intrinsic.Control.Else
+	'Get PID that was logged,
+	F.Intrinsic.File.File2String(V.Local.sFile,V.Local.sFile)
+	F.Intrinsic.Math.IsNumeric(V.Local.sFile.Trim,V.Local.bExists)
+	F.Intrinsic.Control.If(V.Local.bExists,=,True)
+		V.Local.iPID.Set(V.Local.sFile.Long)
+		F.Intrinsic.Task.PIDRunning(V.Local.iPID,V.Local.bExists)
+		F.Intrinsic.Control.If(V.Local.bExists,=,True)
+
+			'Program is logged as running, Force Restart?
+			F.Intrinsic.UI.Msgbox("Global Shop Export to ATS is Currently Running, Force Restart?","Force Restart?",4,V.Local.iRet)
+			F.Intrinsic.Control.If(V.Local.iRet,=,6)
+				'Force Restart
+				f.Intrinsic.Task.terminatePID(v.Local.iPID)
+				'Create Program Status file to let it know its running or not every day.
+				F.Intrinsic.String.Build("{0}\3625_EXPORT",V.Caller.FilesDir,V.Local.sFile)
+				F.Intrinsic.File.String2File(V.Local.sFile,V.Ambient.PID)
+			F.Intrinsic.Control.Else
+				'End if they answer no
+				F.Intrinsic.Control.End
+
+			F.Intrinsic.Control.EndIf
+		F.Intrinsic.Control.Else
+			'Create Program Status file to let it know its running or not every day.
+			F.Intrinsic.String.Build("{0}\3625_EXPORT",V.Caller.FilesDir,V.Local.sFile)
+			F.Intrinsic.File.String2File(V.Local.sFile,V.Ambient.PID)
+		F.Intrinsic.Control.endif
+
+	F.Intrinsic.Control.EndIf
+
+F.Intrinsic.Control.EndIf
+
+F.Intrinsic.Variable.AddRV("Status","Cont")
+
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("IsRunning_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	Function.Intrinsic.String.Concat("Project: GCG_3625_Export_CMI.gas",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+Function.Intrinsic.Control.EndIf
+
+
+
+Program.Sub.IsRunning.End
+
+Program.Sub.CheckIfStopped.Start
+F.Intrinsic.Control.SetErrorHandler("CheckIfStopped_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String)
+
+V.Local.sFile.Declare(String)
+V.Local.bExists.Declare(Boolean)
+
+F.Intrinsic.String.Build("{0}\3625_EXPORT",V.Caller.FilesDir,V.Local.sFile)
+F.Intrinsic.File.Exists(V.Local.sFile,V.Local.bExists)
+F.Intrinsic.Control.If(V.Local.bExists,=,False)
+	F.Intrinsic.Variable.AddRV("Status","Stop")
+F.Intrinsic.Control.Else
+	F.Intrinsic.Variable.AddRV("Status","Cont")
+F.Intrinsic.Control.EndIf
+
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("CheckIfStopped_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	Function.Intrinsic.String.Concat("Project: GCG_3625_Export_CMI.gas",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+Function.Intrinsic.Control.EndIf
+
+
+Program.Sub.CheckIfStopped.End
+
+Program.Sub.Comments.Start
+${$0$}$GCG_Export$}$WAW$}$2/24/2016$}$False
+${$1$}$$}$$}$0$}$38120$}$Pre-On-Line Update$}$5/3/2016 9:40:10 PM$}$(Program: JB032A; Screen: JBS032A)
+
+${$3$}$0$}$$}$-1$}$-1$}$$}$1/1/1900$}$Program controls all Import / Exports if stopped by online update, they can be restarted again.
+'Watchdog Program controls programs manually from server and also runs auto on online update to see if programs errorored out so they can start again.
+GCG_3625_ProgramWatchDog.gas on hook 38120
+
+Other Programs
+GCG_3625_Export_CMI - Exports file sto ATS from GSS
+Run File = global Files 3625_EXPORT - to keep track of PID and if program is running so it does not run again.
+
+GCG_3625_Import_CMI - Imports files from ATS to GLobal SHop
+Run File = Global\Files\3625_IMPORT - to keep track of PID and if program is running so it does not run again.
+
+Error Logging.
+Global\Files\3625_IMPORT_ERRORS
+Global\Files\3625_EXPORT_ERRORS
+
+
+Program.Sub.Comments.End
+

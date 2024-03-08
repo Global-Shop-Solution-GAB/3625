@@ -1,0 +1,932 @@
+Program.Sub.ScreenSU.Start
+Gui.F_WatchDog..create
+Gui.F_WatchDog..caption("GSS <--> ATS Import / Export Watchdog")
+Gui.F_WatchDog..size(10545,4245)
+Gui.F_WatchDog..minx(0)
+Gui.F_WatchDog..miny(0)
+Gui.F_WatchDog..position(0,0)
+Gui.F_WatchDog..event(UnLoad,f_watchdog_unload)
+Gui.F_WatchDog..alwaysontop(False)
+Gui.F_WatchDog..fontname("Arial")
+Gui.F_WatchDog..fontsize(8)
+Gui.F_WatchDog..forecolor(0)
+Gui.F_WatchDog..fontstyle(,,,)
+Gui.F_WatchDog..BackColor(-2147483633)
+Gui.F_WatchDog..controlbox(True)
+Gui.F_WatchDog..maxbutton(False)
+Gui.F_WatchDog..minbutton(True)
+Gui.F_WatchDog..mousepointer(0)
+Gui.F_WatchDog..moveable(True)
+Gui.F_WatchDog..sizeable(False)
+Gui.F_WatchDog..ShowInTaskBar(True)
+Gui.F_WatchDog..titlebar(True)
+Gui.F_WatchDog.cmdStartExport.create(button)
+Gui.F_WatchDog.cmdStartExport.caption("Start Export")
+Gui.F_WatchDog.cmdStartExport.visible(True)
+Gui.F_WatchDog.cmdStartExport.size(825,480)
+Gui.F_WatchDog.cmdStartExport.zorder(0)
+Gui.F_WatchDog.cmdStartExport.position(7440,365)
+Gui.F_WatchDog.cmdStartExport.enabled(True)
+Gui.F_WatchDog.cmdStartExport.fontname("Arial")
+Gui.F_WatchDog.cmdStartExport.fontsize(8)
+Gui.F_WatchDog.cmdStartExport.event(Click,cmdstartexport_click)
+Gui.F_WatchDog.cmdStartExport.defaultvalue("")
+Gui.F_WatchDog.cmdStartExport.controlgroup(0)
+Gui.F_WatchDog.cmdStartImport.create(button)
+Gui.F_WatchDog.cmdStartImport.caption("Start Import")
+Gui.F_WatchDog.cmdStartImport.visible(True)
+Gui.F_WatchDog.cmdStartImport.size(825,480)
+Gui.F_WatchDog.cmdStartImport.zorder(0)
+Gui.F_WatchDog.cmdStartImport.position(7440,1775)
+Gui.F_WatchDog.cmdStartImport.enabled(True)
+Gui.F_WatchDog.cmdStartImport.fontname("Arial")
+Gui.F_WatchDog.cmdStartImport.fontsize(8)
+Gui.F_WatchDog.cmdStartImport.event(Click,cmdstartimport_click)
+Gui.F_WatchDog.cmdStartImport.defaultvalue("")
+Gui.F_WatchDog.cmdStartImport.controlgroup(0)
+Gui.F_WatchDog.lbl1.create(label,"Export to ATS from Global:",True,3945,255,1,200,110,True,0,Arial,12,-2147483633,0)
+Gui.F_WatchDog.lbl1.fontstyle(True,False,False,False,False)
+Gui.F_WatchDog.lbl1.defaultvalue("")
+Gui.F_WatchDog.lbl1.controlgroup(0)
+Gui.F_WatchDog.lbl2.create(label,"Import to Global from ATS:",True,3990,255,1,200,1530,True,0,Arial,12,-2147483633,0)
+Gui.F_WatchDog.lbl2.fontstyle(True,False,False,False,False)
+Gui.F_WatchDog.lbl2.defaultvalue("")
+Gui.F_WatchDog.lbl2.controlgroup(0)
+Gui.F_WatchDog.txtExportProgram.create(textbox,"",True,6525,300,0,200,435,False,0,Arial,8,-2147483643,1)
+Gui.F_WatchDog.txtExportProgram.defaultvalue("")
+Gui.F_WatchDog.txtExportProgram.controlgroup(0)
+Gui.F_WatchDog.txtImportProgram.create(textbox,"",True,6510,300,0,200,1895,False,0,Arial,8,-2147483643,1)
+Gui.F_WatchDog.txtImportProgram.defaultvalue("")
+Gui.F_WatchDog.txtImportProgram.controlgroup(0)
+Gui.F_WatchDog.cmdGetExpPrg.create(button)
+Gui.F_WatchDog.cmdGetExpPrg.caption("^")
+Gui.F_WatchDog.cmdGetExpPrg.visible(True)
+Gui.F_WatchDog.cmdGetExpPrg.size(465,375)
+Gui.F_WatchDog.cmdGetExpPrg.zorder(0)
+Gui.F_WatchDog.cmdGetExpPrg.position(6800,400)
+Gui.F_WatchDog.cmdGetExpPrg.enabled(True)
+Gui.F_WatchDog.cmdGetExpPrg.fontname("Arial")
+Gui.F_WatchDog.cmdGetExpPrg.fontsize(8)
+Gui.F_WatchDog.cmdGetExpPrg.event(Click,cmdgetexpprg_click)
+Gui.F_WatchDog.cmdGetExpPrg.defaultvalue("")
+Gui.F_WatchDog.cmdGetExpPrg.controlgroup(0)
+Gui.F_WatchDog.cmdGetImpProg.create(button)
+Gui.F_WatchDog.cmdGetImpProg.caption("^")
+Gui.F_WatchDog.cmdGetImpProg.visible(True)
+Gui.F_WatchDog.cmdGetImpProg.size(465,375)
+Gui.F_WatchDog.cmdGetImpProg.zorder(0)
+Gui.F_WatchDog.cmdGetImpProg.position(6800,1805)
+Gui.F_WatchDog.cmdGetImpProg.enabled(True)
+Gui.F_WatchDog.cmdGetImpProg.fontname("Arial")
+Gui.F_WatchDog.cmdGetImpProg.fontsize(8)
+Gui.F_WatchDog.cmdGetImpProg.event(Click,cmdgetimpprog_click)
+Gui.F_WatchDog.cmdGetImpProg.defaultvalue("")
+Gui.F_WatchDog.cmdGetImpProg.controlgroup(0)
+Gui.F_WatchDog.cmdStopImp.create(button)
+Gui.F_WatchDog.cmdStopImp.caption("**Stop Import")
+Gui.F_WatchDog.cmdStopImp.visible(True)
+Gui.F_WatchDog.cmdStopImp.size(825,480)
+Gui.F_WatchDog.cmdStopImp.zorder(0)
+Gui.F_WatchDog.cmdStopImp.position(8400,1790)
+Gui.F_WatchDog.cmdStopImp.enabled(True)
+Gui.F_WatchDog.cmdStopImp.fontname("Arial")
+Gui.F_WatchDog.cmdStopImp.fontsize(8)
+Gui.F_WatchDog.cmdStopImp.event(Click,cmdstopimp_click)
+Gui.F_WatchDog.cmdStopImp.defaultvalue("")
+Gui.F_WatchDog.cmdStopImp.controlgroup(0)
+Gui.F_WatchDog.lbl3.create(label,"** Stop Import: This will stop the Import after the current file is finished.",True,10185,570,1,195,2325,True,0,Arial,12,-2147483633,0)
+Gui.F_WatchDog.lbl3.fontstyle(True,False,False,False,False)
+Gui.F_WatchDog.lbl3.ForeColor(16711680)
+Gui.F_WatchDog.lbl3.defaultvalue("")
+Gui.F_WatchDog.lbl3.controlgroup(0)
+Gui.F_WatchDog.cmdStopExp.create(button)
+Gui.F_WatchDog.cmdStopExp.caption("*Stop Export")
+Gui.F_WatchDog.cmdStopExp.visible(True)
+Gui.F_WatchDog.cmdStopExp.size(825,480)
+Gui.F_WatchDog.cmdStopExp.zorder(0)
+Gui.F_WatchDog.cmdStopExp.position(8400,365)
+Gui.F_WatchDog.cmdStopExp.enabled(True)
+Gui.F_WatchDog.cmdStopExp.fontname("Arial")
+Gui.F_WatchDog.cmdStopExp.fontsize(8)
+Gui.F_WatchDog.cmdStopExp.event(Click,cmdstopexp_click)
+Gui.F_WatchDog.cmdStopExp.defaultvalue("")
+Gui.F_WatchDog.cmdStopExp.controlgroup(0)
+Gui.F_WatchDog.lbl4.create(label,"* Stop Export: This will Stop the  Export After Current File is Finished.",True,9060,600,1,195,885,True,0,Arial,12,-2147483633,0)
+Gui.F_WatchDog.lbl4.fontstyle(True,False,False,False,False)
+Gui.F_WatchDog.lbl4.ForeColor(16711680)
+Gui.F_WatchDog.lbl4.defaultvalue("")
+Gui.F_WatchDog.lbl4.controlgroup(0)
+Gui.F_WatchDog.cmdLogs.create(button)
+Gui.F_WatchDog.cmdLogs.caption("GAB Error Logs")
+Gui.F_WatchDog.cmdLogs.visible(True)
+Gui.F_WatchDog.cmdLogs.size(1470,375)
+Gui.F_WatchDog.cmdLogs.zorder(0)
+Gui.F_WatchDog.cmdLogs.position(200,3000)
+Gui.F_WatchDog.cmdLogs.enabled(True)
+Gui.F_WatchDog.cmdLogs.fontname("Arial")
+Gui.F_WatchDog.cmdLogs.fontsize(8)
+Gui.F_WatchDog.cmdLogs.event(Click,cmdlogs_click)
+Gui.F_WatchDog.cmdLogs.defaultvalue("")
+Gui.F_WatchDog.cmdLogs.controlgroup(0)
+Gui.F_WatchDog.cmdResetExp.create(button)
+Gui.F_WatchDog.cmdResetExp.caption("Reset Export")
+Gui.F_WatchDog.cmdResetExp.visible(True)
+Gui.F_WatchDog.cmdResetExp.size(855,480)
+Gui.F_WatchDog.cmdResetExp.zorder(0)
+Gui.F_WatchDog.cmdResetExp.position(9300,365)
+Gui.F_WatchDog.cmdResetExp.enabled(True)
+Gui.F_WatchDog.cmdResetExp.fontname("Arial")
+Gui.F_WatchDog.cmdResetExp.fontsize(8)
+Gui.F_WatchDog.cmdResetExp.event(Click,cmdresetexp_click)
+Gui.F_WatchDog.cmdResetExp.defaultvalue("")
+Gui.F_WatchDog.cmdResetExp.controlgroup(0)
+Gui.F_Logs..create
+Gui.F_Logs..caption("ATS <--> GSS GAB Error Logs")
+Gui.F_Logs..size(11325,5310)
+Gui.F_Logs..minx(0)
+Gui.F_Logs..miny(0)
+Gui.F_Logs..position(0,0)
+Gui.F_Logs..event(UnLoad,f_logs_unload)
+Gui.F_Logs..alwaysontop(False)
+Gui.F_Logs..fontname("Arial")
+Gui.F_Logs..fontsize(8)
+Gui.F_Logs..forecolor(0)
+Gui.F_Logs..fontstyle(,,,)
+Gui.F_Logs..BackColor(-2147483633)
+Gui.F_Logs..controlbox(True)
+Gui.F_Logs..maxbutton(False)
+Gui.F_Logs..minbutton(True)
+Gui.F_Logs..mousepointer(0)
+Gui.F_Logs..moveable(True)
+Gui.F_Logs..sizeable(False)
+Gui.F_Logs..ShowInTaskBar(True)
+Gui.F_Logs..titlebar(True)
+Gui.F_Logs.tabx1.create(tab)
+Gui.F_Logs.tabx1.size(10755,4305)
+Gui.F_Logs.tabx1.position(200,200)
+Gui.F_Logs.tabx1.visible(True)
+Gui.F_Logs.tabx1.fontname("Arial")
+Gui.F_Logs.tabx1.fontsize(8)
+Gui.F_Logs.tabx1.event(Click,tabx1_click)
+Gui.F_Logs.tabx1.Tabs(2)
+Gui.F_Logs.tabx1.SetTab(0)
+Gui.F_Logs.tabx1.Caption("Import to Global")
+Gui.F_Logs.tabx1.SetTab(1)
+Gui.F_Logs.tabx1.Caption("Export to ATS")
+Gui.F_Logs.mltxtImport.create(textboxm)
+Gui.F_Logs.mltxtImport.text("")
+Gui.F_Logs.mltxtImport.visible(True)
+Gui.F_Logs.mltxtImport.size(10365,3210)
+Gui.F_Logs.mltxtImport.zorder(0)
+Gui.F_Logs.mltxtImport.position(110,40)
+Gui.F_Logs.mltxtImport.enabled(True)
+Gui.F_Logs.mltxtImport.alignment(0)
+Gui.F_Logs.mltxtImport.parent("tabx1",0)
+Gui.F_Logs.mltxtImport.fontname("Arial")
+Gui.F_Logs.mltxtImport.fontsize(8)
+Gui.F_Logs.mltxtImport.BackColor(-2147483643)
+Gui.F_Logs.mltxtImport.defaultvalue("")
+Gui.F_Logs.mltxtImport.controlgroup(0)
+Gui.F_Logs.mltxtExport.create(textboxm)
+Gui.F_Logs.mltxtExport.text("")
+Gui.F_Logs.mltxtExport.visible(True)
+Gui.F_Logs.mltxtExport.size(10335,3225)
+Gui.F_Logs.mltxtExport.zorder(0)
+Gui.F_Logs.mltxtExport.position(145,45)
+Gui.F_Logs.mltxtExport.enabled(True)
+Gui.F_Logs.mltxtExport.borderstyle(1)
+Gui.F_Logs.mltxtExport.alignment(0)
+Gui.F_Logs.mltxtExport.parent("tabx1",1)
+Gui.F_Logs.mltxtExport.fontname("Arial")
+Gui.F_Logs.mltxtExport.fontsize(8)
+Gui.F_Logs.mltxtExport.BackColor(-2147483643)
+Gui.F_Logs.mltxtExport.defaultvalue("")
+Gui.F_Logs.mltxtExport.controlgroup(0)
+Gui.F_Logs.cmdClearImpLogs.create(button)
+Gui.F_Logs.cmdClearImpLogs.caption("Clear")
+Gui.F_Logs.cmdClearImpLogs.visible(True)
+Gui.F_Logs.cmdClearImpLogs.size(855,375)
+Gui.F_Logs.cmdClearImpLogs.zorder(0)
+Gui.F_Logs.cmdClearImpLogs.position(150,3340)
+Gui.F_Logs.cmdClearImpLogs.enabled(True)
+Gui.F_Logs.cmdClearImpLogs.parent("tabx1",0)
+Gui.F_Logs.cmdClearImpLogs.fontname("Arial")
+Gui.F_Logs.cmdClearImpLogs.fontsize(8)
+Gui.F_Logs.cmdClearImpLogs.event(Click,cmdclearimplogs_click)
+Gui.F_Logs.cmdClearImpLogs.defaultvalue("")
+Gui.F_Logs.cmdClearImpLogs.controlgroup(0)
+Gui.F_Logs.cmdClearExpLogs.create(button)
+Gui.F_Logs.cmdClearExpLogs.caption("Clear")
+Gui.F_Logs.cmdClearExpLogs.visible(True)
+Gui.F_Logs.cmdClearExpLogs.size(855,375)
+Gui.F_Logs.cmdClearExpLogs.zorder(0)
+Gui.F_Logs.cmdClearExpLogs.position(150,3440)
+Gui.F_Logs.cmdClearExpLogs.enabled(True)
+Gui.F_Logs.cmdClearExpLogs.parent("tabx1",1)
+Gui.F_Logs.cmdClearExpLogs.fontname("Arial")
+Gui.F_Logs.cmdClearExpLogs.fontsize(8)
+Gui.F_Logs.cmdClearExpLogs.event(Click,cmdclearexplogs_click)
+Gui.F_Logs.cmdClearExpLogs.defaultvalue("")
+Gui.F_Logs.cmdClearExpLogs.controlgroup(0)
+Gui.F_ResetExp..create
+Gui.F_ResetExp..caption("Reset GSS to ATS Export")
+Gui.F_ResetExp..size(3300,3075)
+Gui.F_ResetExp..minx(0)
+Gui.F_ResetExp..miny(0)
+Gui.F_ResetExp..position(0,0)
+Gui.F_ResetExp..event(UnLoad,f_resetexp_unload)
+Gui.F_ResetExp..alwaysontop(False)
+Gui.F_ResetExp..fontname("Arial")
+Gui.F_ResetExp..fontsize(8)
+Gui.F_ResetExp..forecolor(0)
+Gui.F_ResetExp..fontstyle(,,,)
+Gui.F_ResetExp..BackColor(-2147483633)
+Gui.F_ResetExp..controlbox(True)
+Gui.F_ResetExp..maxbutton(False)
+Gui.F_ResetExp..minbutton(False)
+Gui.F_ResetExp..mousepointer(0)
+Gui.F_ResetExp..moveable(True)
+Gui.F_ResetExp..sizeable(False)
+Gui.F_ResetExp..ShowInTaskBar(False)
+Gui.F_ResetExp..titlebar(True)
+Gui.F_ResetExp.lbl1.create(label,"Export GSS Files Edited after the below Date:",True,2445,465,1,155,1010,True,0,Arial,8,-2147483633,0)
+Gui.F_ResetExp.lbl1.defaultvalue("")
+Gui.F_ResetExp.lbl1.controlgroup(0)
+Gui.F_ResetExp.cmdResetOk.create(button)
+Gui.F_ResetExp.cmdResetOk.caption("Ok")
+Gui.F_ResetExp.cmdResetOk.visible(True)
+Gui.F_ResetExp.cmdResetOk.size(855,315)
+Gui.F_ResetExp.cmdResetOk.zorder(0)
+Gui.F_ResetExp.cmdResetOk.position(200,1900)
+Gui.F_ResetExp.cmdResetOk.enabled(True)
+Gui.F_ResetExp.cmdResetOk.fontname("Arial")
+Gui.F_ResetExp.cmdResetOk.fontsize(8)
+Gui.F_ResetExp.cmdResetOk.event(Click,cmdresetok_click)
+Gui.F_ResetExp.cmdResetOk.defaultvalue("")
+Gui.F_ResetExp.cmdResetOk.controlgroup(0)
+Gui.F_ResetExp.ddl_ExpType.create(dropdownlist)
+Gui.F_ResetExp.ddl_ExpType.visible(True)
+Gui.F_ResetExp.ddl_ExpType.size(1455,330)
+Gui.F_ResetExp.ddl_ExpType.zorder(0)
+Gui.F_ResetExp.ddl_ExpType.position(200,500)
+Gui.F_ResetExp.ddl_ExpType.enabled(True)
+Gui.F_ResetExp.ddl_ExpType.fontname("Arial")
+Gui.F_ResetExp.ddl_ExpType.fontsize(8)
+Gui.F_ResetExp.ddl_ExpType.event(Change,ddl_exptype_click)
+Gui.F_ResetExp.ddl_ExpType.event(Click,ddl_exptype_click)
+Gui.F_ResetExp.ddl_ExpType.defaultvalue("")
+Gui.F_ResetExp.ddl_ExpType.controlgroup(0)
+Gui.F_ResetExp.lbl2.create(label,"Pick Export Type:",True,1935,255,1,200,200,True,0,Arial,8,-2147483633,0)
+Gui.F_ResetExp.lbl2.defaultvalue("")
+Gui.F_ResetExp.lbl2.controlgroup(0)
+Gui.F_ResetExp.dtp_ResetExp.create(datepicker)
+Gui.F_ResetExp.dtp_ResetExp.visible(True)
+Gui.F_ResetExp.dtp_ResetExp.size(1935,285)
+Gui.F_ResetExp.dtp_ResetExp.zorder(0)
+Gui.F_ResetExp.dtp_ResetExp.position(100,1470)
+Gui.F_ResetExp.dtp_ResetExp.enabled(True)
+Gui.F_ResetExp.dtp_ResetExp.checkbox(False)
+Gui.F_ResetExp.dtp_ResetExp.defaultvalue("")
+Gui.F_ResetExp.dtp_ResetExp.controlgroup(0)
+Program.Sub.ScreenSU.End
+
+Program.Sub.Preflight.Start
+Variable.Global.sImportFile.Declare(String)
+Variable.Global.sExportFile.Declare(String)
+Variable.UDT.uImpLogs.Define("File",String,File)
+Variable.UDT.uImpLogs.Define("Type",String,Type)
+Variable.UDT.uImpLogs.Define("Date",Date,Date)
+Variable.Global.iExpType.Declare(Long,6)
+Program.Sub.Preflight.End
+
+Program.Sub.Main.Start
+F.Intrinsic.Control.SetErrorHandler("Main_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String)
+
+'Get current programs already saved
+F.Intrinsic.Control.CallSub(Getcurrentprograms)
+'check to see if watchdog for ATS import/exports is running
+F.Intrinsic.Control.CallSub(Isrunning)
+
+Gui.F_WatchDog..Show
+
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("Main_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	Function.Intrinsic.String.Concat("Project: GCG_3625_ProgramWatchDog.gas",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+Function.Intrinsic.Control.EndIf
+
+
+Program.Sub.Main.End
+
+Program.Sub.f_watchdog_unload.Start
+V.Local.sFile.Declare(String)
+V.Local.bExists.Declare(Boolean)
+
+'check to see if watchdog is already running for ATS Import Export programs
+
+F.Intrinsic.String.Build("{0}\3625_RUNNING",V.Caller.FilesDir,V.Local.sFile)
+F.Intrinsic.File.Exists(V.Local.sFile,V.Local.bExists)
+F.Intrinsic.Control.If(V.Local.bExists,=,True)
+	F.Intrinsic.File.DeleteFile(V.Local.sFile)
+
+F.Intrinsic.Control.EndIf
+F.Intrinsic.Control.End
+
+Program.Sub.f_watchdog_unload.End
+
+Program.Sub.cmdstartexport_click.Start
+F.Intrinsic.Control.SetErrorHandler("cmdstartexport_click_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String)
+V.Local.sFile.Declare(String)
+V.Local.bStat.Declare(Boolean)
+V.Local.iPID.Declare(Long)
+
+V.Local.sFile.Set(V.Screen.F_WatchDog!txtExportProgram.Text)
+F.Intrinsic.Control.If(V.Local.sFile.Trim,<>,"")
+	F.Intrinsic.String.IsInString(V.Local.sFile,".gas",True,V.Local.bStat)
+	F.Intrinsic.Control.If(V.Local.bStat,=,True)
+		F.Global.General.CallAsyncGAS(V.Local.sFile,V.Local.iPID)
+	F.Intrinsic.Control.EndIf
+F.Intrinsic.Control.EndIf
+
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("cmdstartexport_click_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	Function.Intrinsic.String.Concat("Project: GCG_3625_ProgramWatchDog.gas",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+Function.Intrinsic.Control.EndIf
+
+
+Program.Sub.cmdstartexport_click.End
+
+Program.Sub.cmdstartimport_click.Start
+F.Intrinsic.Control.SetErrorHandler("cmdstartimport_click_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String)
+V.Local.sFile.Declare(String)
+V.Local.bStat.Declare(Boolean)
+V.Local.iPID.Declare(Long)
+
+
+V.Local.sFile.Set(V.Screen.F_WatchDog!txtImportProgram.Text)
+F.Intrinsic.Control.If(V.Local.sFile.Trim,<>,"")
+	F.Intrinsic.String.IsInString(V.Local.sFile,".gas",True,V.Local.bStat)
+	F.Intrinsic.Control.If(V.Local.bStat,=,True)
+		F.Global.General.CallAsyncGAS(V.Local.sFile,V.Local.iPID)
+	F.Intrinsic.Control.EndIf
+F.Intrinsic.Control.EndIf
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("cmdstartimport_click_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	Function.Intrinsic.String.Concat("Project: GCG_3625_ProgramWatchDog.gas",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+Function.Intrinsic.Control.EndIf
+
+
+Program.Sub.cmdstartimport_click.End
+
+Program.Sub.cmdgetexpprg_click.Start
+F.Intrinsic.Control.SetErrorHandler("cmdgetexpprg_click_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String)
+V.Local.sFile.Declare(String)
+
+Function.Intrinsic.UI.ShowOpenFileDialog("","*.gas","",V.Local.sFile)
+F.Intrinsic.Control.If(V.Local.sFile,<>,"***CANCEL***")
+	Gui.F_WatchDog.txtExportProgram.Text(V.Local.sFile)
+	F.Intrinsic.Control.CallSub(Savecfg)
+F.Intrinsic.Control.EndIf
+
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("cmdgetexpprg_click_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	Function.Intrinsic.String.Concat("Project: GCG_3625_ProgramWatchDog.gas",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+Function.Intrinsic.Control.EndIf
+
+
+Program.Sub.cmdgetexpprg_click.End
+
+Program.Sub.cmdgetimpprog_click.Start
+F.Intrinsic.Control.SetErrorHandler("cmdgetimpprog_click_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String)
+V.Local.sFile.Declare(String)
+
+Function.Intrinsic.UI.ShowOpenFileDialog("","*.gas","",V.Local.sFile)
+F.Intrinsic.Control.If(V.Local.sFile,<>,"***CANCEL***")
+	Gui.F_WatchDog.txtImportProgram.Text(V.Local.sFile)
+	F.Intrinsic.Control.CallSub(Savecfg)
+
+F.Intrinsic.Control.EndIf
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("cmdgetimpprog_click_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	Function.Intrinsic.String.Concat("Project: GCG_3625_ProgramWatchDog.gas",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+Function.Intrinsic.Control.EndIf
+
+
+Program.Sub.cmdgetimpprog_click.End
+
+Program.Sub.IsRunning.Start
+F.Intrinsic.Control.SetErrorHandler("IsRunning_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String)
+V.Local.sFile.Declare(String)
+V.Local.bExists.Declare(Boolean)
+V.Local.iPID.Declare(Long)
+
+'This sub launches programs that have ended by error.
+
+'Now check to make sure Import and Export are both running.
+'Import
+F.Intrinsic.String.Build("{0}\3625_IMPORT",V.Caller.FilesDir,V.Local.sFile)
+F.Intrinsic.File.Exists(V.Local.sFile,V.Local.bExists)
+F.Intrinsic.Control.If(V.Local.bExists,=,False)
+	'Launch Program
+	F.Intrinsic.Control.If(V.Global.sImportFile.Trim,<>,"")
+		F.Global.General.CallAsyncGAS(V.Global.sImportFile,V.Local.iPID)
+	F.Intrinsic.Control.EndIf
+	
+F.Intrinsic.Control.Else
+	'Get PID that was logged,
+	F.Intrinsic.File.File2String(V.Local.sFile,V.Local.sFile)
+	F.Intrinsic.Math.IsNumeric(V.Local.sFile.Trim,V.Local.bExists)
+	F.Intrinsic.Control.If(V.Local.bExists,=,True)
+		V.Local.iPID.Set(V.Local.sFile.Long)
+		F.Intrinsic.Task.PIDRunning(V.Local.iPID,V.Local.bExists)
+		F.Intrinsic.Control.If(V.Local.bExists,=,False)
+			F.Intrinsic.Control.If(V.Global.sImportFile.Trim,<>,"")
+				'Launch Program if PID is not running
+				F.Global.General.CallAsyncGAS(V.Global.sImportFile,V.Local.iPID)
+			F.Intrinsic.Control.EndIf
+		F.Intrinsic.Control.endif
+
+	F.Intrinsic.Control.EndIf
+
+F.Intrinsic.Control.EndIf
+
+'Export
+
+F.Intrinsic.String.Build("{0}\3625_EXPORT",V.Caller.FilesDir,V.Local.sFile)
+F.Intrinsic.File.Exists(V.Local.sFile,V.Local.bExists)
+F.Intrinsic.Control.If(V.Local.bExists,=,False)
+	'Launch Program
+	F.Intrinsic.Control.If(V.Global.sExportFile.Trim,<>,"")
+		F.Global.General.CallAsyncGAS(V.Global.sExportFile,V.Local.iPID)
+	F.Intrinsic.Control.EndIf
+	
+F.Intrinsic.Control.Else
+	'Get PID that was logged,
+	F.Intrinsic.File.File2String(V.Local.sFile,V.Local.sFile)
+	F.Intrinsic.Math.IsNumeric(V.Local.sFile.Trim,V.Local.bExists)
+	F.Intrinsic.Control.If(V.Local.bExists,=,True)
+		V.Local.iPID.Set(V.Local.sFile.Long)
+		F.Intrinsic.Task.PIDRunning(V.Local.iPID,V.Local.bExists)
+		F.Intrinsic.Control.If(V.Local.bExists,=,False)
+			F.Intrinsic.Control.If(V.Global.sExportFile.Trim,<>,"")
+				'Launch Program if PID is not running
+				F.Global.General.CallAsyncGAS(V.Global.sExportFile,V.Local.iPID)
+			F.Intrinsic.Control.EndIf
+		F.Intrinsic.Control.endif
+
+	F.Intrinsic.Control.EndIf
+
+F.Intrinsic.Control.EndIf
+
+
+'get this programs PID
+V.Local.iPID.Set(V.Ambient.PID)
+
+'check to see if watchdog is already running for ATS Programs
+F.Intrinsic.String.Build("{0}\3625_RUNNING",V.Caller.FilesDir,V.Local.sFile)
+F.Intrinsic.File.Exists(V.Local.sFile,V.Local.bExists)
+F.Intrinsic.Control.If(V.Local.bExists,=,False)
+	'Create Program Status file to let it know its running or not every day.
+	F.Intrinsic.File.String2File(V.Local.sFile,V.Local.iPID.String)
+	
+F.Intrinsic.Control.Else
+	'Get PID that was logged,
+	F.Intrinsic.File.File2String(V.Local.sFile,V.Local.sFile)
+	F.Intrinsic.Math.IsNumeric(V.Local.sFile.Trim,V.Local.bExists)
+	F.Intrinsic.Control.If(V.Local.bExists,=,True)
+		V.Local.iPID.Set(V.Local.sFile.Long)
+		F.Intrinsic.Task.PIDRunning(V.Local.iPID,V.Local.bExists)
+		F.Intrinsic.Control.If(V.Local.bExists,=,True)
+			'Exit if program is already running.
+			F.Intrinsic.Control.End
+
+		F.Intrinsic.Control.endif
+
+	F.Intrinsic.Control.EndIf
+
+F.Intrinsic.Control.EndIf
+
+
+
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("IsRunning_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	Function.Intrinsic.String.Concat("Project: GCG_3625_ProgramWatchDog.gas",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+Function.Intrinsic.Control.EndIf
+
+
+Program.Sub.IsRunning.End
+
+Program.Sub.GetCurrentPrograms.Start
+F.Intrinsic.Control.SetErrorHandler("GetCurrentPrograms_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String)
+
+'Get current programs already selected
+V.Local.sFile.Declare(String)
+V.Local.sProgs.Declare(String)
+V.Local.bExists.Declare(Boolean)
+
+F.Intrinsic.String.Build("{0}\3625_ImpExp_ATS.cfg",V.Caller.FilesDir,V.Local.sFile)
+F.Intrinsic.File.Exists(V.Local.sFile,V.Local.bExists)
+F.Intrinsic.Control.If(V.Local.bExists,=,True)
+	F.Intrinsic.File.File2String(V.Local.sFile,V.Local.sProgs)
+	F.Intrinsic.String.Split(V.Local.sProgs,"*!*",V.Local.sProgs)
+	F.Intrinsic.Control.If(V.Local.sProgs.UBound,=,1)
+		Gui.F_WatchDog.txtExportProgram.Text(V.Local.sProgs(0).Trim)
+		V.global.sexportfile.set(V.local.sprogs(0).trim)
+		Gui.F_WatchDog.txtImportProgram.Text(V.Local.sProgs(1).Trim)
+		V.global.simportfile.set(V.Local.sProgs(1).Trim)
+	F.Intrinsic.Control.EndIf
+F.Intrinsic.Control.EndIf
+
+
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("GetCurrentPrograms_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	Function.Intrinsic.String.Concat("Project: GCG_3625_ProgramWatchDog.gas",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+Function.Intrinsic.Control.EndIf
+
+
+Program.Sub.GetCurrentPrograms.End
+
+Program.Sub.SaveCfg.Start
+F.Intrinsic.Control.SetErrorHandler("SaveCfg_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String)
+
+'Save cfg each time selected
+
+V.Local.sFile.Declare(String)
+V.Local.sProgs.Declare(String)
+
+F.Intrinsic.String.Build("{0}\3625_ImpExp_ATS.cfg",V.Caller.FilesDir,V.Local.sFile)
+
+F.Intrinsic.String.Build("{0}*!*{1}",V.Screen.F_WatchDog!txtExportProgram.Text,V.Screen.F_WatchDog!txtImportProgram.Text,V.Local.sProgs)
+F.Intrinsic.File.String2File(V.Local.sFile,V.Local.sProgs)
+
+
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("SaveCfg_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	Function.Intrinsic.String.Concat("Project: GCG_3625_ProgramWatchDog.gas",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+Function.Intrinsic.Control.EndIf
+
+
+Program.Sub.SaveCfg.End
+
+Program.Sub.cmdstopimp_click.Start
+F.Intrinsic.Control.SetErrorHandler("cmdstopimp_click_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String)
+V.Local.sFile.Declare(String)
+V.Local.bExists.Declare(Boolean)
+V.Local.iPID.Declare(Long)
+
+V.Local.iPID.Set(V.Caller.PID)
+
+'Delete file, the import program checks after each file to see if deleted, it can stop before the next file,
+'this is intended for maintenance purposes so that nothing is stopped mid-stream.
+
+F.Intrinsic.String.Build("{0}\3625_IMPORT",V.Caller.FilesDir,V.Local.sFile)
+F.Intrinsic.File.Exists(V.Local.sFile,V.Local.bExists)
+F.Intrinsic.Control.If(V.Local.bExists,=,True)
+
+	F.Intrinsic.File.DeleteFile(V.Local.sFile)
+F.Intrinsic.Control.EndIf
+
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("cmdstopimp_click_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	Function.Intrinsic.String.Concat("Project: GCG_3625_ProgramWatchDog.gas",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+Function.Intrinsic.Control.EndIf
+
+
+Program.Sub.cmdstopimp_click.End
+
+Program.Sub.cmdstopexp_click.Start
+F.Intrinsic.Control.SetErrorHandler("cmdstopexp_click_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String)
+V.Local.sFile.Declare(String)
+V.Local.bExists.Declare(Boolean)
+V.Local.iPID.Declare(Long)
+
+V.Local.iPID.Set(V.Caller.PID)
+
+'This will delete the file, the export program checks before the 15 minute standby to see if file is not there, and will end the program if not found
+F.Intrinsic.String.Build("{0}\3625_EXPORT",V.Caller.FilesDir,V.Local.sFile)
+F.Intrinsic.File.Exists(V.Local.sFile,V.Local.bExists)
+F.Intrinsic.Control.If(V.Local.bExists,=,True)
+	F.Intrinsic.File.DeleteFile(V.Local.sFile)
+F.Intrinsic.Control.EndIf
+
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("cmdstopexp_click_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	Function.Intrinsic.String.Concat("Project: GCG_3625_ProgramWatchDog.gas",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+Function.Intrinsic.Control.EndIf
+
+
+Program.Sub.cmdstopexp_click.End
+
+Program.Sub.cmdlogs_click.Start
+F.Intrinsic.Control.SetErrorHandler("cmdlogs_click_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String)
+
+'Launches Log view.
+F.Intrinsic.Control.CallSub(Getlogs)
+Gui.F_Logs..Show
+
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("cmdlogs_click_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	Function.Intrinsic.String.Concat("Project: GCG_3625_ProgramWatchDog.gas",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+Function.Intrinsic.Control.EndIf
+
+
+Program.Sub.cmdlogs_click.End
+
+Program.Sub.f_logs_unload.Start
+Gui.F_Logs..Visible(false)
+
+Program.Sub.f_logs_unload.End
+
+Program.Sub.GetLogs.Start
+F.Intrinsic.Control.SetErrorHandler("GetLogs_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String)
+V.Local.sDir.Declare(String)
+V.Local.sFile.Declare(String)
+V.Local.sFileList.Declare(String)
+V.Local.bExists.Declare(Boolean)
+
+'Import Program Error Logs
+F.Intrinsic.String.Build("{0}\3625_IMPORT_ERRORS",V.Caller.FilesDir,V.Local.sFile)
+F.Intrinsic.File.Exists(V.Local.sFile,V.Local.bExists)
+F.Intrinsic.Control.If(V.Local.bExists,=,True)
+	F.Intrinsic.File.File2String(V.Local.sFile,V.Local.sFile)
+	Gui.F_Logs.mltxtImport.Text(V.Local.sFile)
+F.Intrinsic.Control.Else
+	Gui.F_Logs.mltxtImport.Text("No Errors")
+F.Intrinsic.Control.EndIf
+
+'Export Program Error Logs
+F.Intrinsic.String.Build("{0}\3625_EXPORT_ERRORS",V.Caller.FilesDir,V.Local.sFile)
+F.Intrinsic.File.Exists(V.Local.sFile,V.Local.bExists)
+F.Intrinsic.Control.If(V.Local.bExists,=,True)
+	F.Intrinsic.File.File2String(V.Local.sFile,V.Local.sFile)
+	Gui.F_Logs.mltxtExport.Text(V.Local.sFile)
+F.Intrinsic.Control.Else
+	Gui.F_Logs.mltxtExport.Text("No Errors")
+F.Intrinsic.Control.EndIf
+
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("GetLogs_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	Function.Intrinsic.String.Concat("Project: GCG_3625_ProgramWatchDog.gas",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+Function.Intrinsic.Control.EndIf
+
+
+Program.Sub.GetLogs.End
+
+Program.Sub.cmdclearexplogs_click.Start
+F.Intrinsic.Control.SetErrorHandler("cmdclearexplogs_click_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String)
+V.Local.sFile.Declare(String)
+
+'Import Program Error Logs
+F.Intrinsic.String.Build("{0}\3625_EXPORT_ERRORS",V.Caller.FilesDir,V.Local.sFile)
+F.Intrinsic.File.String2File(V.Local.sFile,"")
+F.Intrinsic.Control.CallSub(Getlogs)
+
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("cmdclearexplogs_click_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	Function.Intrinsic.String.Concat("Project: GCG_3625_ProgramWatchDog.gas",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+Function.Intrinsic.Control.EndIf
+
+
+Program.Sub.cmdclearexplogs_click.End
+
+Program.Sub.cmdclearimplogs_click.Start
+F.Intrinsic.Control.SetErrorHandler("cmdclearimplogs_click_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String)
+V.Local.sFile.Declare(String)
+
+'Import Program Error Logs
+F.Intrinsic.String.Build("{0}\3625_IMPORT_ERRORS",V.Caller.FilesDir,V.Local.sFile)
+F.Intrinsic.File.String2File(V.Local.sFile,"")
+F.Intrinsic.Control.CallSub(Getlogs)
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("cmdclearimplogs_click_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	Function.Intrinsic.String.Concat("Project: GCG_3625_ProgramWatchDog.gas",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+Function.Intrinsic.Control.EndIf
+
+
+Program.Sub.cmdclearimplogs_click.End
+
+Program.Sub.tabx1_click.Start
+'refresh logs everytime tab is switched.
+
+F.Intrinsic.Control.CallSub(Getlogs)
+
+Program.Sub.tabx1_click.End
+
+Program.Sub.cmdresetexp_click.Start
+F.Intrinsic.Control.SetErrorHandler("cmdresetexp_click_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String)
+
+'Load Types
+	'3 = F.Intrinsic.Control.CallSub(Wo)
+	'0 = F.Intrinsic.Control.CallSub(Inv)
+	'1 = F.Intrinsic.Control.CallSub(Bom)
+	'2 = F.Intrinsic.Control.CallSub(So)
+	'4 = F.Intrinsic.Control.CallSub(Ship)
+	'5 = F.Intrinsic.Control.CallSub(Po)
+Gui.F_ResetExp.ddl_ExpType.ClearItems
+Gui.F_ResetExp.ddl_ExpType.AddItem("ALL")
+Gui.F_ResetExp.ddl_ExpType.AddItem("Work Orders")
+Gui.F_ResetExp.ddl_ExpType.AddItem("Inventory")
+Gui.F_ResetExp.ddl_ExpType.AddItem("Bill of Material")
+Gui.F_ResetExp.ddl_ExpType.AddItem("Sales Orders")
+Gui.F_ResetExp.ddl_ExpType.AddItem("Shipping")
+Gui.F_ResetExp.ddl_ExpType.AddItem("Purchase Orders")
+Gui.F_ResetExp.ddl_ExpType.Text("ALL")
+
+Gui.F_ResetExp..Show
+
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("cmdresetexp_click_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	Function.Intrinsic.String.Concat("Project: GCG_3625_ProgramWatchDog.gas",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+Function.Intrinsic.Control.EndIf
+
+
+Program.Sub.cmdresetexp_click.End
+
+Program.Sub.f_resetexp_unload.Start
+Gui.F_ResetExp..Visible(False)
+
+Program.Sub.f_resetexp_unload.End
+
+Program.Sub.cmdresetok_click.Start
+F.Intrinsic.Control.SetErrorHandler("cmdresetok_click_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String)
+'update GCG_3625_DATE_LASTRAN to run based on users selection
+V.Local.sSql.Declare(String)
+V.Local.sDate.Declare(String)
+
+F.Intrinsic.String.Format(V.Screen.F_ResetExp!dtp_resetExp.Value,"YYYY-MM-DD",V.Local.sDate)
+F.Intrinsic.Control.If(V.Global.iExpType,<>,6)
+	F.Intrinsic.String.Build("Update GCG_3625_LASTRAN set DATE_LAST_RAN = '{0}' where ITEM_ID = '{1}'",V.Local.sDate,V.Global.iExpType,V.Local.sSql)
+F.Intrinsic.Control.Else
+	F.Intrinsic.String.Build("Update GCG_3625_LASTRAN set DATE_LAST_RAN = '{0}'",V.Local.sDate,V.Local.sSql)
+F.Intrinsic.Control.EndIf
+F.ODBC.Connection!conX.OpenConnection(V.Ambient.PDSN,V.Ambient.PUser,V.Ambient.PPass)
+F.ODBC.Connection!conX.Execute(V.Local.sSql)
+F.ODBC.Connection!conX.Close
+Gui.F_ResetExp..Visible(False)
+
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("cmdresetok_click_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	Function.Intrinsic.String.Concat("Project: GCG_3625_ProgramWatchDog.gas",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+Function.Intrinsic.Control.EndIf
+
+
+Program.Sub.cmdresetok_click.End
+
+Program.Sub.ddl_exptype_click.Start
+F.Intrinsic.Control.SetErrorHandler("ddl_exptype_click_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String)
+'Export Types
+'3 = F.Intrinsic.Control.CallSub(Wo)
+'0 = F.Intrinsic.Control.CallSub(Inv)
+'1 = F.Intrinsic.Control.CallSub(Bom)
+'2 = F.Intrinsic.Control.CallSub(So)
+'4 = F.Intrinsic.Control.CallSub(Ship)
+'5 = F.Intrinsic.Control.CallSub(Po)
+'Set global variable that will be used in update sql statement for table GCG_3625_LASTRAN
+F.Intrinsic.Control.SelectCase(V.Screen.F_ResetExp!ddl_ExpType.Text)
+F.Intrinsic.Control.Case("Work Orders")
+	V.Global.iExpType.Set(3)
+F.Intrinsic.Control.Case("Inventory")
+	V.Global.iExpType.Set(0)
+F.Intrinsic.Control.Case("Bill of Material")
+	V.Global.iExpType.Set(1)
+F.Intrinsic.Control.Case("Sales Orders")
+	V.Global.iExpType.Set(2)
+F.Intrinsic.Control.Case("Shipping")
+	V.Global.iExpType.Set(4)
+F.Intrinsic.Control.Case("Purchase Orders")
+	V.Global.iExpType.Set(5)
+F.Intrinsic.Control.CaseElse
+	V.Global.iExpType.Set(6)
+F.Intrinsic.Control.EndSelect
+
+
+
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("ddl_exptype_click_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	Function.Intrinsic.String.Concat("Project: GCG_3625_ProgramWatchDog.gas",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+Function.Intrinsic.Control.EndIf
+
+
+Program.Sub.ddl_exptype_click.End
+
+Program.Sub.Comments.Start
+${$0$}$GCG_3625_ProgramWatchDog$}$MAtchley$}$5/6/2016$}$False
+${$3$}$0$}$$}$-1$}$-1$}$$}$1/1/1900$}$Program controls all Import / Exports if stopped by online update, they can be restarted again.
+'Watchdog Program controls programs manually from server and also runs auto on online update to see if programs errorored out so they can start again.
+GCG_3625_ProgramWatchDog.gas on hook 38120
+
+Other Programs
+GCG_3625_Export_CMI - Exports file sto ATS from GSS
+Run File = global Files 3625_EXPORT - to keep track of PID and if program is running so it does not run again.
+
+GCG_3625_Import_CMI - Imports files from ATS to GLobal SHop
+Run File = Global\Files\3625_IMPORT - to keep track of PID and if program is running so it does not run again.
+
+Error Logging.
+Global\Files\3625_IMPORT_ERRORS
+Global\Files\3625_EXPORT_ERRORS
+
+
+Program.Sub.Comments.End
+

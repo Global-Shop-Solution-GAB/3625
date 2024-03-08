@@ -1,0 +1,1462 @@
+Program.Sub.ScreenSU.Start
+gui.F_EndImport..create
+gui.F_EndImport..caption("End ATS Import?")
+gui.F_EndImport..size(3630,3855)
+gui.F_EndImport..minx(0)
+gui.F_EndImport..miny(0)
+gui.F_EndImport..position(0,0)
+gui.F_EndImport..event(unload,f_endimport_unload)
+gui.F_EndImport..alwaysontop(False)
+gui.F_EndImport..fontname("Arial")
+gui.F_EndImport..fontsize(8)
+gui.F_EndImport..forecolor(0)
+gui.F_EndImport..fontstyle(,,,,)
+gui.F_EndImport..BackColor(-2147483633)
+gui.F_EndImport..controlbox(True)
+gui.F_EndImport..maxbutton(False)
+gui.F_EndImport..minbutton(False)
+gui.F_EndImport..mousepointer(0)
+gui.F_EndImport..moveable(True)
+gui.F_EndImport..sizeable(False)
+gui.F_EndImport..ShowInTaskBar(True)
+gui.F_EndImport..titlebar(True)
+gui.F_EndImport.cmdEnd.create(button)
+gui.F_EndImport.cmdEnd.caption("Stop ATS Import")
+gui.F_EndImport.cmdEnd.visible(True)
+gui.F_EndImport.cmdEnd.size(1335,390)
+gui.F_EndImport.cmdEnd.zorder(0)
+gui.F_EndImport.cmdEnd.position(165,2570)
+gui.F_EndImport.cmdEnd.enabled(True)
+gui.F_EndImport.cmdEnd.fontname("Arial")
+gui.F_EndImport.cmdEnd.fontsize(8)
+gui.F_EndImport.cmdEnd.event(click,f_endimport_unload)
+gui.F_EndImport.cmdEnd.defaultvalue("")
+gui.F_EndImport.cmdEnd.controlgroup(0)
+gui.F_EndImport.lblMessage.create(label,"Stopping ATS Import will Require Task Scheduler to Be ReScheduled!!!!!",True,3180,1335,1,100,900,True,0,Arial,14,-2147483633,0)
+gui.F_EndImport.lblMessage.fontstyle(True,False,False,False)
+gui.F_EndImport.lblMessage.defaultvalue("")
+gui.F_EndImport.lblMessage.controlgroup(0)
+gui.F_EndImport.lblMsg2.create(label,"ATS Import is currenlty in Standby Mode Currently for 10 Minutes...",True,2985,510,1,200,200,True,0,Arial,8,-2147483633,0)
+gui.F_EndImport.lblMsg2.defaultvalue("")
+gui.F_EndImport.lblMsg2.controlgroup(0)
+gui.F_EndImport.cmdContinue.create(button)
+gui.F_EndImport.cmdContinue.caption("Continue")
+gui.F_EndImport.cmdContinue.visible(True)
+gui.F_EndImport.cmdContinue.size(1065,375)
+gui.F_EndImport.cmdContinue.zorder(0)
+gui.F_EndImport.cmdContinue.position(2140,2600)
+gui.F_EndImport.cmdContinue.enabled(True)
+gui.F_EndImport.cmdContinue.fontname("Arial")
+gui.F_EndImport.cmdContinue.fontsize(8)
+gui.F_EndImport.cmdContinue.event(click,cmdhide_click)
+gui.F_EndImport.cmdContinue.defaultvalue("")
+gui.F_EndImport.cmdContinue.controlgroup(0)
+
+
+Program.Sub.ScreenSU.End
+
+Program.Sub.Preflight.Start
+Variable.Global.Then.Declare(Float,0)
+Variable.Global.Now.Declare(Float,0)
+Variable.Global.sSuffix.Declare(String)
+Variable.Global.sJob.Declare(String)
+Variable.Global.EarlyProcess.Declare(Boolean,False)
+Variable.Global.bEnd.Declare(Boolean,False)
+Variable.Global.sISSUELIST.Declare(String)
+Variable.Global.sWIPFGList.Declare(String)
+Variable.Global.sPOReceiptsList.Declare(String)
+Variable.Global.sMOPENList.Declare(String)
+V.Global.sLogging.Declare(String)
+V.Global.sLoggingFile.Declare(String)
+Program.Sub.Preflight.End
+
+Program.Sub.Main.Start
+F.Intrinsic.Control.SetErrorHandler("Main_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String)
+'This is a custom GAB script that will go through several folders and depending on files found in those folders will upload data to Global Shop
+'Date: 02/24/2016
+'Coded by: WAW
+'ORIGINAL
+
+V.Global.Then.Set("23.5")
+V.Local.lmin.Declare(Long)
+V.Local.snowhour.Declare(String)
+V.Local.snowpm.Declare(String)
+V.Local.lhour.Declare(Long)
+V.Local.snow.Declare(String)
+V.local.supdatessql.Declare(String)
+V.Local.sdate.Declare(String)
+V.Local.iWait.Declare(Long)
+V.Local.sTempFile.Declare(String)
+V.Local.sLoggingTime.Declare(String)
+V.Local.bExists.Declare(Boolean)
+V.Local.iReturn.Declare(Long)
+'Check to make sure program is not already running
+F.Intrinsic.Control.CallSub(Isrunning)
+
+'open connection
+F.odbc.Connection!conx.OpenConnection(V.Ambient.PDSN,V.Ambient.PUser,V.Ambient.PPass)
+F.Intrinsic.UI.InvokeWaitDialog("Importing ATS Files...")
+
+'Check to see if the Logging File exists
+F.Intrinsic.String.Build("{0}\Import_{1}.txt",V.Caller.LocalGSSTempDir,V.Caller.CompanyCode,V.Global.sLoggingFile)
+F.Intrinsic.File.Exists(V.Global.sLoggingFile,V.Local.bExists)
+'If it exists move to temp directory with timestamp
+F.Intrinsic.Control.If(V.Local.bExists,=,True)
+	F.Intrinsic.String.Format(V.Ambient.Now,"mmddyyHhNnSs",V.Local.sLoggingTime)
+	F.Intrinsic.String.Build("{0}\Import_{1}_{2}.txt",V.Caller.TempDir,V.Caller.CompanyCode,V.Local.sLoggingTime,V.Local.sTempFile)
+	F.Intrinsic.File.MoveFile(V.Global.sLoggingFile,V.Local.sTempFile,V.Local.iReturn)
+F.Intrinsic.Control.EndIf
+
+F.Intrinsic.File.String2File(V.Global.sLoggingFile,"")
+
+ 'do until 12:30 p.m. at night
+F.Intrinsic.Control.DoUntil(V.global.now,>,V.global.Then)
+	
+	'set the now time
+	V.Local.snow.Set(V.ambient.Time)
+	'set the minutes and hours
+	F.Intrinsic.Date.Minute(V.Ambient.time,V.Local.lmin)
+	F.Intrinsic.Date.Hour(V.Ambient.Time,V.Local.lhour)
+	'check to see if PM and 12 is needed to be added
+	F.Intrinsic.String.Split(V.Local.snow.TimeComp,":",V.Local.snowhour)
+	F.Intrinsic.String.Split(V.Local.snowhour(2)," ",V.Local.snowPM)
+	F.Intrinsic.Control.If(V.Local.snowPM(1),=,"PM")
+	F.Intrinsic.Control.andIf(V.Local.snowhour(0),<>,12,)
+		F.Intrinsic.math.Add(V.Local.snowhour,12,V.Local.lhour)
+	F.Intrinsic.Control.EndIf
+
+	'combine the hour and minutes
+	F.Intrinsic.String.Build("{0}.{1}",V.Local.lhour,V.Local.lmin,V.Global.Now)
+	'Get ToBe Processed File List for all folders at the same time.
+	F.Intrinsic.Control.CallSub(Get_tobeprocessed)
+	'Args from Previos Sub Issue Material List = "sIssue", WIP2FG List = "sWIPFG"
+	' ... other PROCESS subs still need this same logic to be added to!!!!!!
+	'call the issue material subroutine
+	F.Intrinsic.UI.ChangeWaitStatus("Processing Issue Material / WIP to FG Transactions from ATS...")
+
+'--------------------------------------------------------------------------------------------------------------------------------------
+
+	F.Intrinsic.String.Build("{0}: Starting Issue Material",V.Ambient.Now,V.Global.sLogging)
+	F.Intrinsic.File.Append2FileNewLine(V.Global.sLoggingFile,V.Global.sLogging)
+	
+	F.Intrinsic.Control.CallSub(Issuematerial,"sIssueList",V.Global.sIssueList)
+	
+	F.Intrinsic.String.Build("{0}: Finished Issue Material",V.Ambient.Now,V.Global.sLogging)
+	F.Intrinsic.File.Append2FileNewLine(V.Global.sLoggingFile,V.Global.sLogging)
+	
+'--------------------------------------------------------------------------------------------------------------------------------------
+	
+	F.Intrinsic.String.Build("{0}: Starting WIP To FG",V.Ambient.Now,V.Global.sLogging)
+	F.Intrinsic.File.Append2FileNewLine(V.Global.sLoggingFile,V.Global.sLogging)
+
+	'call the WIPFG subroutine
+	F.Intrinsic.Control.callsub(Wipfg,"sWIPFGList",V.Global.sWIPFGList)
+	
+	F.Intrinsic.String.Build("{0}: Finished WIP To FG",V.Ambient.Now,V.Global.sLogging)
+	F.Intrinsic.File.Append2FileNewLine(V.Global.sLoggingFile,V.Global.sLogging)
+	
+'--------------------------------------------------------------------------------------------------------------------------------------
+
+	'args from previous tobeprocessed mopen = sMOPENList, Po Receipts = sPOReceiptsList
+	'call the MOPEN and PO Receipt subroutines
+	F.Intrinsic.UI.ChangeWaitStatus("Processing MOPEN Files / PO Receipts from ATS...")
+
+	F.Intrinsic.String.Build("{0}: Started PO Receipts List",V.Ambient.Now,V.Global.sLogging)
+	F.Intrinsic.File.Append2FileNewLine(V.Global.sLoggingFile,V.Global.sLogging)
+	
+	F.Intrinsic.Control.CallSub(Poreceipts,"sPOReceiptsList",V.global.sPOReceiptsList)
+	
+	F.Intrinsic.String.Build("{0}: Finished PO Receipts List",V.Ambient.Now,V.Global.sLogging)
+	F.Intrinsic.File.Append2FileNewLine(V.Global.sLoggingFile,V.Global.sLogging)
+	
+'--------------------------------------------------------------------------------------------------------------------------------------
+
+	'set the date
+	V.local.sdate.Set(V.Ambient.Date)
+	F.Intrinsic.String.Format(V.Local.sdate,"MMDDYY",V.Local.sdate)
+
+	'close the open work orders
+	F.intrinsic.string.build("update JOB_HEADER set DATE_CLOSED = '{0}' where QTY_COMPLETED >= QTY_ORDER and DATE_CLOSED = '{1}'",V.Local.sdate,"",V.Local.supdatessql)
+	F.ODBC.Connection!conX.Execute(V.Local.supdatessql)
+	'close the open work orders
+	F.intrinsic.string.build("update JOB_HEADER set DATE_CLOSED = '{0}' where QTY_COMPLETED >= QTY_ORDER and DATE_CLOSED = '{1}'",V.Local.sdate,"000000",V.Local.supdatessql)
+	F.ODBC.Connection!conX.Execute(V.Local.supdatessql)
+
+	'removed sleep loop, because we have the watch dog program to stop it if we need to.
+	'Check to see if watchdog has stopped program, only stops after each file so nothing is missed in between
+	F.Intrinsic.Control.CallSub(Checkifstopped)
+	F.Intrinsic.Control.If(V.Args.Status,=,"Stop")
+		F.Intrinsic.Control.End
+	F.Intrinsic.Control.Endif
+
+
+''add 1 to the global program counter
+F.Intrinsic.Control.Loop
+
+F.Intrinsic.Control.CallSub(Unload)
+
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("Main_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	Function.Intrinsic.String.Concat("Project: GCG_3625_Import_CMI.gas",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
+	'Log Errors
+	F.Intrinsic.Control.CallSub(Logerror,"Error",V.Local.sError)
+	F.Intrinsic.Control.CallSub(Unload)
+Function.Intrinsic.Control.EndIf
+
+
+Program.Sub.Main.End
+
+Program.Sub.Unload.Start
+F.Intrinsic.Control.SetErrorHandler("Unload_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String)
+V.Local.sFile.Declare(String)
+V.Local.bExists.Declare(Boolean)
+
+'Delete Run File
+F.Intrinsic.String.Build("{0}\3625_IMPORT",V.Caller.FilesDir,V.Local.sFile)
+F.Intrinsic.File.Exists(V.Local.sFile,V.Local.bExists)
+F.Intrinsic.Control.If(V.Local.bExists,=,True)
+	F.Intrinsic.File.DeleteFile(V.Local.sFile)
+F.Intrinsic.Control.EndIf
+
+'close connection to the database
+F.ODBC.Connection!conx.Close
+
+'end the program
+F.Intrinsic.Control.End
+
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("Unload_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	Function.Intrinsic.String.Concat("Project: GCG_3625_Import_CMI.gas",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.Control.End
+	F.Intrinsic.Control.CallSub(Unload)
+Function.Intrinsic.Control.EndIf
+
+
+Program.Sub.Unload.End
+
+Program.Sub.IssueMaterial.Start
+F.Intrinsic.Control.SetErrorHandler("IssueMaterial_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String)
+V.Local.sFileList.Declare(String)
+V.Local.sFile.Declare(String)
+V.Local.sRecords.Declare(String)
+V.Local.sValues.Declare(String)
+V.Local.sNotProcessedPath.Declare(String)
+V.Local.sProcessedPath.Declare(String)
+V.Local.sProcessedFile.Declare(String)
+V.Local.sErrorsPath.Declare(String)
+V.Local.sErrorsFile.Declare(String)
+V.Local.sIssuePath.Declare(String)
+V.Local.sIssueFile.Declare(String)
+V.Local.sIssueString.Declare(String)
+V.Local.i.Declare(Long)
+V.Local.ia.Declare(Long)
+V.Local.iRet.Declare(Long)
+V.Local.bCheck.Declare(Boolean)
+V.Local.sfilepathandname.Declare(String)
+V.Local.sparams.Declare(String)
+V.Local.snewname.Declare(String)
+V.Local.binstring.Declare(Boolean)
+V.Local.sqtyvalues.Declare(String)
+V.Local.scallwrapperpath.Declare(String)
+V.Local.bexists.Declare(Boolean)
+V.Local.sdate.Declare(String)
+V.Local.stime.Declare(String)
+V.Local.binstring.Set(False)
+V.Local.ideleteblank.Declare(Long)
+V.Local.scallwrapperreturn.Declare(String)
+V.Local.bcallwrapperreturn.Declare(Boolean)
+V.Local.sMsg.Declare(String)
+V.Local.sTemp.Declare(String)
+
+'formats the ambient time and ambient date
+F.Intrinsic.String.Format(V.Ambient.Date,"MMDDYYYY",V.Local.sdate)
+
+'Initializing not process folder path
+F.Intrinsic.String.Build("{0}\import\not processed\issue\",V.Caller.FilesDir,V.Local.sNotProcessedPath)
+F.Intrinsic.String.Build("{0}\import\processed\issue\",V.Caller.FilesDir,V.Local.sProcessedPath)
+F.Intrinsic.String.Build("{0}\import\errors\issue\",V.Caller.FilesDir,V.Local.sErrorsPath)
+
+'Get file list of all issue material files and looping through those to process in
+'passed File list for all Processes from Main sub instead of getting right before, this prevents processes being done before ATS dumped out files for previous requirements, i.e. WIP FG before Issue Material.
+V.Local.sFileList.Set(V.global.sIssueList)
+F.Intrinsic.String.Build("{0} ISSUE: File List - {1}{2}{3}",V.Ambient.Now,V.Ambient.NewLine,V.Ambient.Tab,V.Local.sFileList,V.Global.sLogging)
+F.Intrinsic.File.Append2FileNewLine(V.Global.sLoggingFile,V.Global.sLogging)
+
+F.Intrinsic.String.Split(V.Local.sFileList,":",V.Local.sFileList)
+F.Intrinsic.Control.For(V.Local.i,V.Local.sFileList.LBound,V.Local.sFileList.UBound,1)
+	V.Local.bCheck.Set(False)
+	F.Intrinsic.Control.If(V.Local.sFileList(V.Local.i),<>,"")
+		F.Intrinsic.String.Build("{0}{1}",V.Local.sNotProcessedPath,V.Local.sFileList(v.Local.i),V.Local.sFilepathandname)
+		F.Intrinsic.String.Build("{0}{1}",V.caller.FilesDir,V.Local.sFileList(v.Local.i),V.Local.scallwrapperpath)
+
+		'only continue if file is not locked
+		'this is to be sure ATS is not trying to write file at same time.
+		F.Intrinsic.File.IsFileLocked(V.Local.sFile,V.Local.bexists)
+		F.Intrinsic.Control.If(V.Local.bexists,=,False)
+
+			f.Intrinsic.String.Build("{0}\{1}",v.Caller.LocalGSSTempDir,v.Local.sFileList(v.Local.i).Trim,v.Local.sTemp)
+			F.Intrinsic.File.CopyOpenFile(V.Local.sfilepathandname,V.Local.sTemp)
+			'Getting file text, file delimited by "~"
+			F.Intrinsic.File.Exists(V.Local.sTemp,V.Local.bexists)
+			F.Intrinsic.Control.If(V.Local.bexists,=,False)
+				F.Intrinsic.Control.ExitFor(V.Local.i)
+			F.Intrinsic.Control.EndIf
+			'Getting file text, file delimited by "~"
+			F.Intrinsic.File.File2String(V.Local.sTemp,V.Local.sFile)
+			
+			'Logging file that is being processed. We have copied and such so maybe some data is being lost between the files.
+			F.Intrinsic.String.Build("{0} ISSUE: File Information For {1}{2}{3}",V.Ambient.Now,V.Local.sFileList(V.Local.i).Trim,V.Ambient.NewLine,V.Local.sFile,V.Global.sLogging)
+			F.Intrinsic.File.Append2FileNewLine(V.Global.sLoggingFile,V.Global.sLogging)
+			
+			F.Intrinsic.File.DeleteFile(V.Local.sTemp)
+			F.Intrinsic.String.Split(V.Local.sFile,V.Ambient.NewLine,V.Local.sRecords)
+
+			'checking to see if last row is blank, sometimes it is, sometimes not from ATS
+			V.local.ideleteblank.Set(V.Local.sRecords.UBound)
+			F.Intrinsic.Control.If(V.Local.sRecords(v.Local.ideleteblank),=,"")
+				F.Intrinsic.Math.Sub(V.Local.ideleteblank,1,V.Local.ideleteblank)
+			F.Intrinsic.Control.EndIf
+
+			'Looping through inside of file
+			F.Intrinsic.Control.For(V.Local.ia,V.Local.sRecords.LBound,V.Local.ideleteblank,1)
+				F.Intrinsic.String.Build("Processing Issue Material File {0}...",V.Local.sFileList(v.Local.i),V.Local.sMsg)
+				F.Intrinsic.UI.ChangeWaitStatus(V.Local.sMsg,V.Local.ia,V.Local.sRecords.LBound,V.Local.sRecords.UBound)
+				F.Intrinsic.String.Split(V.Local.sRecords(V.Local.ia),"~",V.Local.sValues)
+
+				'0-Part, 1-Rev, 2-Loc, 3-Qty, 4-Lot, 5-Bin, 6-Heat, 7-Serial, 8-Job, 9-Suffix, 10-Sequence
+				'Checking to be sure part, qty, job, suffix, sequence and filled in
+				F.Intrinsic.Control.If(V.Local.sValues(0).Trim,=,"")
+					V.Local.bCheck.Set(True)
+				F.Intrinsic.Control.EndIf
+
+				F.Intrinsic.Control.If(V.Local.sValues(3).Trim,=,"")
+					V.Local.bCheck.Set(True)
+				F.Intrinsic.Control.EndIf
+
+				F.Intrinsic.Control.If(V.Local.sValues(8).Trim,=,"")
+					V.Local.bCheck.Set(True)
+				F.Intrinsic.Control.EndIf
+
+	'			F.Intrinsic.Control.If(V.Local.sValues(9).Trim,=,"")
+	'				V.Local.bCheck.Set(True)
+	'			F.Intrinsic.Control.EndIf
+
+				F.Intrinsic.Control.If(V.Local.sValues(10).Trim,=,"")
+					V.Local.bCheck.Set(True)
+				F.Intrinsic.Control.EndIf
+
+				'pad the first three values
+				F.Intrinsic.String.RPad(V.Local.sValues(0)," ",20,V.Local.sValues(0))
+
+				'check to see if there is a decimal in the qty value
+				F.Intrinsic.String.IsInString(V.Local.sValues(3),".",True,V.Local.binstring)
+				F.Intrinsic.Control.If(V.Local.binstring,=,"True")
+					'if so format the qty for the upload
+					F.Intrinsic.String.Split(V.Local.sValues(3),".",V.Local.sqtyvalues)
+					F.Intrinsic.String.RPad(V.Local.sqtyvalues(1),"0",4,V.Local.sqtyvalues(1))
+					F.Intrinsic.String.LPad(V.Local.sqtyvalues(0),"0",11,V.Local.sqtyvalues(0))
+					F.Intrinsic.String.Build("{0}.{1}",V.Local.sqtyvalues(0),V.Local.sqtyvalues(1),V.Local.sValues(3))
+				F.Intrinsic.Control.Else
+					F.Intrinsic.String.Build("{0}{1}",V.Local.sValues(3),".0000",V.Local.sValues(3))
+					F.intrinsic.String.LPad(V.Local.sValues(3),"0",16,V.Local.sValues(3))
+				F.Intrinsic.Control.EndIf
+				
+				'build the string of values
+				F.Intrinsic.String.Build("{0}~{1}~{2}~{3}~{4}~{5}~{6}~{7}~{8}~{9}~{10}",V.Local.sValues(0),V.Local.sValues(1),V.Local.sValues(2),V.Local.sValues(3),V.Local.sValues(4),V.Local.sValues(5),V.Local.sValues(6),V.Local.sValues(7),V.Local.sValues(8),V.Local.sValues(9),V.Local.sValues(10),V.Local.sRecords(v.Local.ia))
+				
+				F.Intrinsic.String.Build("{0} ISSUE: Error in Data?: {1}",V.Ambient.Now,V.Local.bCheck,V.Global.sLogging)
+				F.Intrinsic.File.Append2FileNewLine(V.Global.sLoggingFile,V.Global.sLogging)
+				
+				'If failed check, move to errors folder
+				F.Intrinsic.Control.If(V.Local.bCheck,=,False)
+					'Building file string for issue
+					F.Intrinsic.String.Replace(V.Local.sRecords(V.Local.ia),"~",",",V.Local.sIssueString)
+					F.Intrinsic.String.Build("{0} ISSUE: Line Being Uploaded - {1}",V.Ambient.Now,V.Local.sIssueString,V.Global.sLogging)
+					F.Intrinsic.File.Append2FileNewLine(V.Global.sLoggingFile,V.Global.sLogging)
+					F.Intrinsic.String.Build("{0}\{1}{2}{3}",V.caller.filesdir,"Z",V.Caller.CompanyCode,"ISSMAT",V.Local.sFilepathandname)
+					F.Intrinsic.File.String2File(V.Local.sfilepathandname,V.Local.sIssueString)
+					'build the filepath and string data for the callwrapper
+					F.Intrinsic.String.Build("{0}{1}{2}!*!{3}!*!{4}","Z",V.caller.companycode,"ISSMAT",V.Local.sIssueString,"NS",V.Local.sparams)
+					F.Intrinsic.String.Build("{0} ISSUE: Callwrapper Parameters - {1}",V.Ambient.Now,V.Local.sparams,V.Global.sLogging)
+					F.Intrinsic.File.Append2FileNewLine(V.Global.sLoggingFile,V.Global.sLogging)
+					F.Intrinsic.Debug.CallWrapperDebugEnable
+					F.Global.General.CallWrapperSync(450100,V.local.sparams)
+					F.Intrinsic.Debug.CallWrapperDebugDisable
+				F.Intrinsic.Control.EndIf
+			'Next record
+			F.Intrinsic.Control.Next(V.Local.ia)
+
+			'Record in file files, moving file over to errors folder.
+			F.Intrinsic.Control.If(V.Local.bCheck,=,True)
+				F.Intrinsic.String.Build("{0}{1}",V.Local.sNotProcessedPath,V.Local.sFileList(v.Local.i),V.Local.sFilepathandname)
+				F.Intrinsic.String.Split(V.Local.sFileList(v.Local.i),".txt",V.Local.sErrorsFile)
+				F.Intrinsic.String.Format(V.Ambient.Time,"HHMMSS",V.Local.stime)
+				F.Intrinsic.String.Build("{0}{1}{2}{3}",V.Local.sErrorsFile(0),V.Local.sdate,V.Local.stime,".txt",V.Local.sFileList(v.Local.i))
+				F.Intrinsic.String.Build("{0}{1}",V.Local.sErrorsPath,V.Local.sFileList(v.Local.i),V.Local.sErrorsFile)
+				F.Intrinsic.File.MoveFile(V.local.sfilepathandname,V.Local.sErrorsFile,V.Local.iRet)
+			F.Intrinsic.Control.Else
+	'			F.Intrinsic.File.GetFileNameFromFQN(V.Local.sFileList(V.Local.i),V.Local.sProcessedFile)
+				F.Intrinsic.String.Build("{0}{1}",V.Local.sNotProcessedPath,V.Local.sFileList(v.Local.i),V.Local.sFilepathandname)
+				F.Intrinsic.String.Split(V.Local.sFileList(v.Local.i),".txt",V.Local.sProcessedFile)
+				F.Intrinsic.String.Format(V.Ambient.Time,"HHMMSS",V.Local.stime)
+				F.Intrinsic.String.Build("{0}{1}{2}{3}",V.Local.sProcessedFile(0),V.Local.sdate,V.Local.stime,".txt",V.Local.sFileList(v.Local.i))
+				F.Intrinsic.String.Build("{0}{1}",V.Local.sProcessedPath,V.Local.sFileList(v.Local.i),V.Local.sprocessedFile)
+				F.Intrinsic.File.MoveFile(V.Local.sFilepathandname,V.Local.sProcessedFile,V.Local.iRet)
+			F.Intrinsic.Control.EndIf
+
+			'see if the file exists still and delete
+			F.Intrinsic.file.Exists(V.Local.sFilepathandname,V.Local.bexists)
+			'see if the file exists, if so delete it
+			F.Intrinsic.Control.If(V.Local.bexists,=,True)
+				F.Intrinsic.File.DeleteFile(V.Local.sFilepathandname)
+			F.Intrinsic.Control.EndIf
+
+		'Above is done only if file is NOT locked
+		F.Intrinsic.Control.EndIf
+	'above is done only if filename <> ""
+	F.Intrinsic.Control.EndIf
+
+	'Check to see if watchdog has stopped program, only stops after each file so nothing is missed in between
+	F.Intrinsic.Control.CallSub(Checkifstopped)
+	F.Intrinsic.Control.If(V.Args.Status,=,"Stop")
+		F.Intrinsic.Control.End
+	F.Intrinsic.Control.Endif
+F.Intrinsic.Control.Next(V.Local.i)
+
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("IssueMaterial_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	Function.Intrinsic.String.Concat("Project: GCG_3625_Impport_CMI.gas",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
+	'Log Errors
+	F.Intrinsic.Control.CallSub(Logerror,"Error",V.Local.sError)
+	F.Intrinsic.Control.CallSub(Unload)
+Function.Intrinsic.Control.EndIf
+
+
+
+Program.Sub.IssueMaterial.End
+
+Program.Sub.WIPFG.Start
+F.Intrinsic.Control.SetErrorHandler("WIPFG_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String)
+V.Local.sFileList.Declare(String)
+V.Local.sFile.Declare(String)
+V.Local.sRecords.Declare(String)
+V.Local.sValues.Declare(String)
+V.Local.sNotProcessedPath.Declare(String)
+V.Local.sProcessedPath.Declare(String)
+V.Local.sProcessedFile.Declare(String)
+V.Local.sErrorsPath.Declare(String)
+V.Local.sErrorsFile.Declare(String)
+V.Local.sParams.Declare(String)
+V.Local.sIssuePath.Declare(String)
+V.Local.sIssueFile.Declare(String)
+V.Local.sIssueString.Declare(String)
+V.Local.i.Declare(Long)
+V.Local.ia.Declare(Long)
+V.Local.iRet.Declare(Long)
+V.Local.bCheck.Declare(Boolean)
+V.Local.sfilepathandname.Declare(String)
+V.Local.sdate.Declare(String)
+V.Local.stime.Declare(String)
+V.Local.bex.Declare(Boolean)
+V.Local.sCostMethod.Declare(String)
+V.Local.sCloseFlag.Declare(String)
+V.Local.sfilename.Declare(String)
+V.Local.ideleteblank.Declare(Long)
+V.Local.scallwrapperreturn.Declare(String)
+V.Local.bcallwrapperreturn.Declare(Boolean)
+V.Local.sParam.Declare(String)
+V.Local.sMsg.Declare(String)
+V.Local.sTemp.Declare(String)
+V.Local.iLock.Declare(Long)
+V.Local.sJob.Declare(String)
+V.Local.sSuffix.Declare(String)
+V.Local.sJS.Declare(String)
+V.Local.iAttempts.Declare(Long,0)
+
+'format the date and times
+F.Intrinsic.String.Format(V.Ambient.Date,"MMDDYYYY",V.Local.sdate)
+
+'Initializing not process folder path
+F.Intrinsic.String.Build("{0}\import\not processed\WIPFG\",V.Caller.FilesDir,V.Local.sNotProcessedPath)
+F.Intrinsic.String.Build("{0}\import\processed\WIPFG\",V.Caller.FilesDir,V.Local.sProcessedPath)
+F.Intrinsic.String.Build("{0}\import\errors\WIPFG\",V.Caller.FilesDir,V.Local.sErrorsPath)
+
+'passed File list for all Processes from Main sub instead of getting right before,
+' this prevents processes being done before ATS dumped out files for previous requirements, i.e. WIP FG before Issue Material.
+V.Local.sFileList.Set(V.global.sWIPFGList)
+
+F.Intrinsic.String.Build("{0} WIP: File List - {1}{2}{3}",V.Ambient.Now,V.Ambient.NewLine,V.Ambient.Tab,V.Local.sFileList,V.Global.sLogging)
+F.Intrinsic.File.Append2FileNewLine(V.Global.sLoggingFile,V.Global.sLogging)
+
+F.Intrinsic.String.Split(V.Local.sFileList,":",V.Local.sFileList)
+F.Intrinsic.Control.For(V.Local.i,V.Local.sFileList.LBound,V.Local.sFileList.UBound,1)
+	V.Local.bCheck.Set(False)
+	V.Local.sfilepathandname.Set("")
+
+	'only if filename is NOT blank
+	F.Intrinsic.Control.If(V.Local.sFileList(V.Local.i),<>,"")
+		V.Local.sfilename.Set(V.Local.sFileList(v.Local.i))
+		F.Intrinsic.String.Build("{0}{1}",V.Local.sNotProcessedPath,V.Local.sFileList(v.Local.i),V.Local.sFilepathandname)
+
+		'only proceed if file is NOT locked
+		F.Intrinsic.File.IsFileLocked(V.Local.sfilepathandname,V.Local.bex)
+		F.Intrinsic.Control.If(V.Local.bex,=,False)
+
+			'Getting file text, file delimited by "~"
+			F.Intrinsic.File.Exists(V.Local.sfilepathandname,V.Local.bEx)
+			F.Intrinsic.Control.If(V.Local.bEx,=,False)
+				F.Intrinsic.Control.ExitFor(V.Local.i)
+			F.Intrinsic.Control.EndIf
+			f.Intrinsic.String.Build("{0}\{1}",v.Caller.LocalGSSTempDir,v.Local.sFileList(v.Local.i).Trim,v.Local.sTemp)
+			F.Intrinsic.File.CopyOpenFile(V.Local.sfilepathandname,V.Local.sTemp)
+			'Getting file text, file delimited by "~"
+			F.Intrinsic.File.Exists(V.Local.sTemp,V.Local.bEx)
+			F.Intrinsic.Control.If(V.Local.bEx,=,False)
+				F.Intrinsic.Control.ExitFor(V.Local.i)
+			F.Intrinsic.Control.EndIf
+			F.Intrinsic.File.File2String(V.Local.sTemp,V.Local.sFile)
+			
+			'Logging file that is being processed. We have copied and such so maybe some data is being lost between the files.
+			F.Intrinsic.String.Build("{0} WIP: File Information For {1}{2}{3}",V.Ambient.Now,V.Local.sFileList(V.Local.i).Trim,V.Ambient.NewLine,V.Local.sFile,V.Global.sLogging)
+			F.Intrinsic.File.Append2FileNewLine(V.Global.sLoggingFile,V.Global.sLogging)	
+			
+			F.Intrinsic.File.DeleteFile(V.Local.sTemp)
+			F.Intrinsic.String.Split(V.Local.sFile,V.Ambient.NewLine,V.Local.sRecords)
+
+			'checking to see if last row is blank, sometimes it is, sometimes not from ATS
+			V.local.ideleteblank.Set(V.Local.sRecords.UBound)
+			F.Intrinsic.Control.If(V.Local.sRecords(v.Local.ideleteblank),=,"")
+				F.Intrinsic.Math.Sub(V.Local.ideleteblank,1,V.Local.ideleteblank)
+			F.Intrinsic.Control.EndIf
+
+			'Looping through inside of file
+			F.Intrinsic.Control.For(V.Local.ia,V.Local.sRecords.LBound,V.Local.ideleteblank,1)
+				F.Intrinsic.String.Build("Processing WIP to Finished Good File {0}...",V.Local.sfilelist(v.Local.i),V.Local.sMsg)
+				F.Intrinsic.UI.ChangeWaitStatus(V.Local.sMsg,V.Local.ia,V.Local.sRecords.LBound,V.Local.sRecords.UBound)
+				F.Intrinsic.String.Split(V.Local.sRecords(V.Local.ia),"~",V.Local.sValues)
+				'0-Job, 1-Suffix, 3-Qty
+				'Checking to be sure qty, job, suffix and filled in
+				F.Intrinsic.Control.If(V.Local.sValues(0).Trim,=,"")
+					V.Local.bCheck.Set(True)
+				F.Intrinsic.Control.Else
+					V.global.sJob.Set(V.Local.sValues(0))
+					F.Intrinsic.String.RPad(V.Local.sValues(0)," ",6,V.Local.sJob)
+				F.Intrinsic.Control.EndIf
+
+				F.Intrinsic.Control.If(V.Local.sValues(1).Trim,=,"")
+					V.Local.bCheck.Set(True)
+				F.Intrinsic.Control.Else
+					V.global.ssuffix.Set(V.Local.sValues(1))
+					F.Intrinsic.String.RPad(V.Local.sValues(1)," ",3,V.Local.sSuffix)
+				F.Intrinsic.Control.EndIf
+
+				F.Intrinsic.Control.If(V.Local.sValues(2).Trim,=,"")
+					V.Local.bCheck.Set(True)
+				F.Intrinsic.Control.EndIf
+
+				F.Intrinsic.String.Build("{0} WIP: Error in Data?: {1}",V.Ambient.Now,V.Local.bCheck,V.Global.sLogging)
+				F.Intrinsic.File.Append2FileNewLine(V.Global.sLoggingFile,V.Global.sLogging)
+				
+				'If failed check, move to errors folder
+				F.Intrinsic.Control.If(V.Local.bCheck,=,False)
+
+					F.Intrinsic.Control.CallSub(Read_option)
+
+					V.Local.sCostMethod.Set(V.Args.CostMEthod.Trim)
+					V.Local.sCloseFlag.Set(V.Args.CloseFlag.Trim)
+
+					F.Intrinsic.String.Replace(V.Local.sRecords(V.Local.ia),"~",V.Ambient.Tab,V.Local.sIssueString)
+					F.Intrinsic.String.Build("{1}{0}{0}{0}{0}{2}{0}{0}{0}{3}{0}{4}",V.Ambient.Tab,"",V.Local.svalues(2),"","",V.Local.sIssueString)
+					F.Intrinsic.String.Build("{0}\{1}{2}",V.caller.filesdir,"WIPFG",V.Caller.CompanyCode,V.Local.sFilepathandname)
+					'file exists?
+					F.Intrinsic.File.Exists(V.Local.sFilepathandname,V.Local.bEx)
+					F.Intrinsic.Control.If(V.Local.bEx,=,True)
+						F.Intrinsic.File.DeleteFile(V.Local.sFilepathandname)
+					F.Intrinsic.Control.EndIf
+					
+					F.Intrinsic.String.Build("{0} WIP: Line Being Uploaded - {1}",V.Ambient.Now,V.Local.sIssueString,V.Global.sLogging)
+					F.Intrinsic.File.Append2FileNewLine(V.Global.sLoggingFile,V.Global.sLogging)
+
+					F.Intrinsic.File.String2File(V.Local.sfilepathandname,V.Local.sIssueString)
+
+					F.Intrinsic.String.Build("{0}!*!{1}!*!{2}!*!{3}!*!!*!!*!!*!!*!!*!!*!{4}!*!{5}!*!!*!!*!!*!{8}!*!!*!{6}!*!!*!!*!N!*!{7}!*!N!*!!*!",V.Caller.CompanyCode,V.Caller.Terminal,V.Caller.Caller,"NS",V.local.sValues(0),V.local.sValues(1),V.Local.sValues(2),"I",V.local.scloseflag,V.local.sParams)
+
+					F.Intrinsic.String.Build("{0} WIP: Callwrapper Params - {1}",V.Ambient.Now,V.Local.sParams,V.Global.sLogging)
+					F.Intrinsic.File.Append2FileNewLine(V.Global.sLoggingFile,V.Global.sLogging)
+
+					F.Intrinsic.String.Build("{0}-{1}",V.Local.sJob,V.Local.sSuffix,V.Local.sJS)
+					'See if there's a lock on the job suffix 0 means no lock exists
+					F.Global.General.ReadSoftLock("WO",V.Local.sJS,V.Local.iLock)
+					
+					F.Intrinsic.String.Build("{0} WIP: Job-Suffix Locked?: {1}",V.Ambient.Now,V.Local.iLock,V.Global.sLogging)
+					F.Intrinsic.File.Append2FileNewLine(V.Global.sLoggingFile,V.Global.sLogging)
+					
+					F.Intrinsic.Control.DoUntil(V.Local.iLock,=,0)
+						'We need to keep track of the number of tries. If we hit 255 tries then we'll want to delete the soft lock
+						F.Intrinsic.Math.Add(V.Local.iAttempts,1,V.Local.iAttempts)
+						
+						'If max attempts reached destroy the soft lock and reset counter. Just in case somehow in those milliseconds another lock is created
+						F.Intrinsic.Control.If(V.Local.iAttempts,=,255)
+							V.Local.iAttempts.Set(0)
+							F.Global.General.DestroySoftLock("WO",V.Local.sJS,V.Local.iLock)
+						F.Intrinsic.Control.Else
+							F.Global.General.ReadSoftLock("WO",V.Local.sJS,V.Local.iLock)
+						F.Intrinsic.Control.EndIf
+					F.Intrinsic.Control.Loop
+					
+					F.Global.General.CallWrapperSync(2003,V.Local.sParams)
+
+					v.local.scallwrapperreturn.Set(v.ambient.callwrapperreturn)
+					
+					F.Intrinsic.String.Build("{0} WIP: Callwrapper Return - {1}{2}",V.Ambient.Now,V.Ambient.NewLine,V.Local.scallwrapperreturn,V.Global.sLogging)
+					F.Intrinsic.File.Append2FileNewLine(V.Global.sLoggingFile,V.Global.sLogging)
+
+					v.Local.sParam.Set(V.Ambient.CallWrapperReturn)
+					F.Intrinsic.Control.If(V.Local.sParam.Trim,<>,"")
+						F.Intrinsic.String.Split(V.Local.sParam.Trim,"*!*",V.Local.sParam)
+						'read our 43/44 array element. split it by :: also, give them the error message that the wrapper returns then exit...
+						F.Intrinsic.String.Split(V.Local.sParam(44).Trim,"::",V.Local.sParam)
+						F.Intrinsic.Control.If(V.Local.sParam(1).Trim,<>,"")
+
+			'				F.Intrinsic.String.IsInString(V.ambient.callwrapperreturn,"error",True,V.Local.bcallwrapperreturn)
+			'				F.Intrinsic.Control.If(V.Local.bcallwrapperreturn,=,"True")
+							F.Intrinsic.String.Replace(V.Local.scallwrapperreturn,"*!*",V.Ambient.NewLine,V.Local.scallwrapperreturn)
+							F.Intrinsic.String.Build("{0}{1}",V.Local.sErrorsPath,V.Local.sFileList(v.Local.i),V.Local.sErrorsFile)
+							F.Intrinsic.file.String2File(V.Local.sErrorsFile,V.Local.scallwrapperreturn)
+						F.Intrinsic.Control.EndIf
+
+					F.Intrinsic.Control.EndIf
+				F.Intrinsic.Control.EndIf
+
+				'Record in files, moving file over to errors folder.
+				F.Intrinsic.Control.If(V.Local.bCheck,=,True)
+					F.Intrinsic.String.Build("{0} WIP: Moving {1} To Errors",V.Ambient.Now,V.Local.sfilename,V.Global.sLogging)
+					F.Intrinsic.File.Append2FileNewLine(V.Global.sLoggingFile,V.Global.sLogging)
+					F.Intrinsic.String.Build("{0}{1}",V.Local.sNotProcessedPath,V.Local.sFilename,V.Local.sFilepathandname)
+					F.Intrinsic.String.Split(V.Local.sFilename,".txt",V.Local.sErrorsFile)
+					F.Intrinsic.String.Format(V.Ambient.Time,"HHMMSS",V.Local.stime)
+					F.Intrinsic.String.Build("{0}{1}{2}{3}",V.Local.sErrorsFile(0),V.Local.sdate,V.Local.stime,".txt",V.Local.sFileList(v.Local.i))
+					F.Intrinsic.String.Build("{0}{1}",V.Local.sErrorsPath,V.Local.sFilelist(v.Local.i),V.Local.sErrorsFile)
+					F.Intrinsic.File.MoveFile(V.local.sfilepathandname,V.Local.sErrorsFile,V.Local.iRet)
+
+				F.Intrinsic.Control.Else
+					F.Intrinsic.String.Build("{0} WIP: Moving {1} To Processed",V.Ambient.Now,V.Local.sfilename,V.Global.sLogging)
+					F.Intrinsic.File.Append2FileNewLine(V.Global.sLoggingFile,V.Global.sLogging)
+					'if upload went without error send to the processed file
+					F.Intrinsic.String.Build("{0}{1}",V.Local.sNotProcessedPath,V.Local.sFilename,V.Local.sFilepathandname)
+					F.Intrinsic.String.Split(V.Local.sFilename,".txt",V.Local.sProcessedFile)
+					F.Intrinsic.String.Format(V.Ambient.Time,"HHMMSS",V.Local.stime)
+					F.Intrinsic.String.Build("{0}{1}{2}{3}",V.Local.sProcessedFile(0),V.Local.sdate,V.Local.stime,".txt",V.Local.sFileList(v.Local.i))
+					F.Intrinsic.String.Build("{0}{1}",V.Local.sProcessedPath,V.Local.sFilelist(v.Local.i),V.Local.sprocessedFile)
+					F.Intrinsic.File.MoveFile(V.Local.sFilepathandname,V.Local.sProcessedFile,V.Local.iRet)
+					F.Intrinsic.UI.Sleep(1)
+				F.Intrinsic.Control.EndIf
+
+			'next record in file
+			F.Intrinsic.Control.Next(V.Local.ia)
+
+		'above is done, only if file is not locked
+		F.Intrinsic.Control.EndIf
+
+	'above is done only if file name is NOT blank
+	F.Intrinsic.Control.EndIf
+
+	'Check to see if watchdog has stopped program, only stops after each file so nothing is missed in between
+	F.Intrinsic.Control.CallSub(Checkifstopped)
+	F.Intrinsic.Control.If(V.Args.Status,=,"Stop")
+		F.Intrinsic.Control.End
+	F.Intrinsic.Control.Endif
+
+'next file
+F.Intrinsic.Control.Next(V.Local.i)
+
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("WIPFG_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	Function.Intrinsic.String.Concat("Project: GCG_3625_Impport_CMI.gas",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
+	'Log Errors
+	F.Intrinsic.Control.CallSub(Logerror,"Error",V.Local.sError)
+	F.Intrinsic.Control.CallSub(Unload)
+Function.Intrinsic.Control.EndIf
+
+
+
+
+Program.Sub.WIPFG.End
+
+Program.Sub.MOPEN.Start
+F.Intrinsic.Control.SetErrorHandler("MOPEN_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String)
+V.Local.sFileList.Declare(String)
+V.Local.sFile.Declare(String)
+V.Local.sRecords.Declare(String)
+V.Local.sValues.Declare(String)
+V.Local.sNotProcessedPath.Declare(String)
+V.Local.sProcessedPath.Declare(String)
+V.Local.sProcessedFile.Declare(String)
+V.Local.sErrorsPath.Declare(String)
+V.Local.sErrorsFile.Declare(String)
+V.Local.sParams.Declare(String)
+V.Local.sIssuePath.Declare(String)
+V.Local.sIssueFile.Declare(String)
+V.Local.sIssueString.Declare(String)
+V.Local.i.Declare(Long)
+V.Local.ia.Declare(Long)
+V.Local.iRet.Declare(Long)
+V.Local.bCheck.Declare(Boolean)
+V.Local.sdate.Declare(String)
+V.Local.stime.Declare(String)
+V.Local.bex.Declare(Boolean)
+V.Local.sfilepathandname.Declare(String)
+V.Local.sCostMethod.Declare(String)
+V.Local.sCloseFlag.Declare(String)
+V.Local.bexists.Declare(Boolean)
+V.Local.binstring.Declare(Boolean)
+
+V.Local.binstring.Set(False)
+V.Local.ideleteblank.Declare(Long)
+V.Local.scallwrapperreturn.Declare(String)
+V.Local.bcallwrapperreturn.Declare(Boolean)
+V.Local.sMsg.Declare(String)
+V.Local.sTemp.Declare(String)
+
+'formats the ambient time and ambient date
+F.Intrinsic.String.Format(V.Ambient.Date,"MMDDYYYY",V.Local.sdate)
+F.Intrinsic.String.Format(V.Ambient.Time,"HHMM",V.Local.stime)
+F.Intrinsic.String.Build("{0}\{1}{2}MOPEN.TXT",V.Caller.FilesDir,V.Caller.CompanyCode,V.Caller.Terminal,V.Local.sFile)
+
+'Initializing not process folder path
+F.Intrinsic.String.Build("{0}\import\not processed\mopen\",V.Caller.FilesDir,V.Local.sNotProcessedPath)
+F.Intrinsic.String.Build("{0}\import\processed\mopen\",V.Caller.FilesDir,V.Local.sProcessedPath)
+F.Intrinsic.String.Build("{0}\import\errors\mopen\",V.Caller.FilesDir,V.Local.sErrorsPath)
+
+'Get file list of all mopen files and looping through those to process in
+'F.Intrinsic.File.GetFileList(V.Local.sNotProcessedPath,V.Local.sFileList)
+V.Local.sFileList.Set(V.global.sMOPENList)
+F.Intrinsic.String.Split(V.Local.sFileList,":",V.Local.sFileList)
+F.Intrinsic.Control.For(V.Local.i,V.Local.sFileList.LBound,V.Local.sFileList.UBound,1)
+
+	V.Local.bCheck.Set(False)
+	F.Intrinsic.Control.If(V.Local.sFileList(V.Local.i),<>,"")
+'		F.Intrinsic.String.Build("{0}{1}",V.Local.sNotProcessedPath,V.Local.sFileList(v.Local.i),V.Local.sFileList(v.Local.i))
+		F.Intrinsic.String.Build("{0}{1}",V.Local.sNotProcessedPath,V.Local.sFileList(v.Local.i),V.Local.sFilepathandname)
+		'only continue if file is not locked
+		'this is to be sure ATS is not trying to write file at same time.
+		F.Intrinsic.File.IsFileLocked(V.Local.sFile,V.Local.bexists)
+		F.Intrinsic.Control.If(V.Local.bexists,=,False)
+
+			f.Intrinsic.String.Build("{0}\{1}",v.Caller.LocalGSSTempDir,v.Local.sFileList(v.Local.i).Trim,v.Local.sTemp)
+		
+'			f.Intrinsic.String.Build("{0}\{1}",v.Caller.LocalGSSTempDir,v.Local.sFileList(v.Local.i).Trim,v.Local.sTemp)
+			F.Intrinsic.File.CopyOpenFile(V.Local.sfilepathandname,V.Local.sTemp)
+			'Getting file text, file delimited by "~"
+			F.Intrinsic.File.Exists(V.Local.sTemp,V.Local.bexists)
+			F.Intrinsic.Control.If(V.Local.bexists,=,False)
+				F.Intrinsic.Control.ExitFor(V.Local.i)
+			F.Intrinsic.Control.EndIf
+			'Getting file text, file delimited by "~"
+			F.Intrinsic.File.File2String(V.Local.sTemp,V.Local.sFile)
+			F.Intrinsic.File.DeleteFile(V.Local.sTemp)
+			F.Intrinsic.String.Split(V.Local.sFile,V.Ambient.NewLine,V.Local.sRecords)
+
+			'checking to see if last row is blank, sometimes it is, sometimes not from ATS
+			V.local.ideleteblank.Set(V.Local.sRecords.UBound)
+			F.Intrinsic.Control.If(V.Local.sRecords(v.Local.ideleteblank),=,"")
+				F.Intrinsic.Math.Sub(V.Local.ideleteblank,1,V.Local.ideleteblank)
+			F.Intrinsic.Control.EndIf
+
+			'Looping through inside of file
+			F.Intrinsic.Control.For(V.Local.ia,V.Local.sRecords.LBound,V.Local.ideleteblank,1)
+				F.Intrinsic.String.Build("Processing MOPEN {0}...",V.Local.sFileList(v.Local.i),V.Local.sMsg)
+				F.Intrinsic.UI.ChangeWaitStatus(V.Local.sMsg,V.Local.ia,V.Local.sRecords.LBound,V.Local.sRecords.UBound)
+
+					F.Intrinsic.String.Split(V.Local.sRecords(V.Local.ia),"~",V.Local.sValues)
+					'Checking to be sure part, qty, job, suffix, employee, sequence and filled in
+					F.Intrinsic.Control.If(V.Local.sValues(0).Trim,=,"")
+						V.Local.bCheck.Set(True)
+					F.Intrinsic.Control.EndIf
+
+					F.Intrinsic.Control.If(V.Local.sValues(1).Trim,=,"")
+						V.Local.bCheck.Set(True)
+					F.Intrinsic.Control.EndIf
+
+					F.Intrinsic.Control.If(V.Local.sValues(2).Trim,=,"")
+						V.Local.bCheck.Set(True)
+					F.Intrinsic.Control.EndIf
+
+					F.Intrinsic.Control.If(V.Local.sValues(3).Trim,=,"")
+						V.Local.bCheck.Set(True)
+					F.Intrinsic.Control.EndIf
+
+					F.Intrinsic.Control.If(V.Local.sValues(4).Trim,=,"")
+						V.Local.bCheck.Set(True)
+					F.Intrinsic.Control.EndIf
+
+					F.Intrinsic.Control.If(V.Local.sValues(1).Trim,=,"")
+						V.Local.bCheck.Set(True)
+					F.Intrinsic.Control.Else
+						F.intrinsic.math.mult(V.Local.sValues(12),10000,V.Local.sValues(12))
+					F.Intrinsic.Control.EndIf
+
+				'build the string of values
+				'If failed check, move to errors folder
+				F.Intrinsic.Control.If(V.Local.bCheck,=,False)
+					F.Intrinsic.Control.CallSub(Read_option)
+	'				V.Local.sCostMethod.Set(V.Args.CostMEthod.Trim)
+					V.Local.sCloseFlag.Set(V.Args.CloseFlag.Trim)
+
+					F.Intrinsic.String.Build("{1}{0}{2}{0}{3}{0}{4}{0}{5}{0}{6}{0}{7}{0}{8}{0}{9}{0}{10}",V.Ambient.Tab,V.Local.svalues(0),V.Local.svalues(1),V.local.sValues(2),V.local.sValues(3),V.Local.svalues(4),V.local.sValues(5),"0",V.Local.sCloseFlag,"D",V.Local.sValues(9),V.local.srecords(v.Local.ia))
+					F.Intrinsic.String.Build("{6}{0}{1}{0}{2}{0}{3}{0}{4}{0}{5}",V.Ambient.Tab,V.Local.sValues(10),"R",V.local.svalues(12),"0","0",V.Local.srecords(v.Local.ia),V.Local.sissuestring)
+
+					F.Intrinsic.String.Build("{0}\{1}{2}{3}",V.caller.filesdir,V.Caller.CompanyCode,V.caller.terminal,"MOPEN.TXT",V.Local.sFile)
+					F.Intrinsic.File.Exists(V.Local.sFile,V.Local.bEx)
+					Function.Intrinsic.Control.If(V.Local.bEx,=,True)
+						F.Intrinsic.File.DeleteFile(V.Local.sFile)
+					F.Intrinsic.Control.EndIf
+
+					F.Intrinsic.File.String2File(V.Local.sFile,V.Local.sissuestring)
+					F.Intrinsic.String.Build("{3}{0}{1}{2}{3}",V.Caller.CompanyCode,V.caller.terminal,"MOPEN.TXT",V.ambient.dblquote,V.Local.sFile)
+					F.Intrinsic.Task.LaunchGSSSync("JB0455","-C",V.Local.sFile)
+	'		
+				F.Intrinsic.Control.EndIf
+			F.Intrinsic.Control.Next(V.Local.ia)
+
+			'Record in file files, moving file over to errors folder.
+			F.Intrinsic.Control.If(V.Local.bCheck,=,True)
+				F.Intrinsic.String.Build("{0}{1}",V.Local.sNotProcessedPath,V.Local.sFileList(v.Local.i),V.Local.sFilepathandname)
+				F.Intrinsic.String.Split(V.Local.sFileList(v.Local.i),".txt",V.Local.sErrorsFile)
+				F.Intrinsic.String.Format(V.Ambient.Time,"HHMMSS",V.Local.stime)
+				F.Intrinsic.String.Build("{0}{1}{2}{3}",V.Local.sErrorsFile(0),V.Local.sdate,V.Local.stime,".txt",V.Local.sFileList(v.Local.i))
+				F.Intrinsic.String.Build("{0}{1}",V.Local.sErrorsPath,V.Local.sFileList(v.Local.i),V.Local.sErrorsFile)
+				F.Intrinsic.File.MoveFile(V.local.sfilepathandname,V.Local.sErrorsFile,V.Local.iRet)
+			F.Intrinsic.Control.Else
+	'				F.Intrinsic.File.GetFileNameFromFQN(V.Local.sFileList(V.Local.i),V.Local.sProcessedFile)
+				F.Intrinsic.String.Build("{0}{1}",V.Local.sNotProcessedPath,V.Local.sFileList(v.Local.i),V.Local.sFilepathandname)
+				F.Intrinsic.String.Split(V.Local.sFileList(v.Local.i),".txt",V.Local.sProcessedFile)
+				F.Intrinsic.String.Format(V.Ambient.Time,"HHMMSS",V.Local.stime)
+				F.Intrinsic.String.Build("{0}{1}{2}{3}",V.Local.sProcessedFile(0),V.Local.sdate,V.Local.stime,".txt",V.Local.sFileList(v.Local.i))
+				F.Intrinsic.String.Build("{0}{1}",V.Local.sProcessedPath,V.Local.sFileList(v.Local.i),V.Local.sprocessedFile)
+				F.Intrinsic.File.MoveFile(V.Local.sFilepathandname,V.Local.sProcessedFile,V.Local.iRet)
+			F.Intrinsic.Control.EndIf
+
+			'see if the file exists still and delete
+			F.Intrinsic.file.Exists(V.Local.sFilepathandname,V.Local.bexists)
+			'see if the file exists, if so delete it
+			F.Intrinsic.Control.If(V.Local.bexists,=,True)
+				F.Intrinsic.File.DeleteFile(V.Local.sFilepathandname)
+			F.Intrinsic.Control.EndIf
+
+		'Above is done only if file is NOT locked
+		F.Intrinsic.Control.EndIf
+	'above is done only if filename <> ""
+	F.Intrinsic.Control.EndIf
+
+	'Check to see if watchdog has stopped program, only stops after each file so nothing is missed in between
+	F.Intrinsic.Control.CallSub(Checkifstopped)
+	F.Intrinsic.Control.If(V.Args.Status,=,"Stop")
+		F.Intrinsic.Control.End
+	F.Intrinsic.Control.Endif
+
+F.Intrinsic.Control.Next(V.Local.i)
+
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("MOPEN_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	Function.Intrinsic.String.Concat("Project: GCG_3625_Import_CMI.gas",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
+	'Log Errors
+	F.Intrinsic.Control.CallSub(Logerror,"Error",V.Local.sError)
+	F.Intrinsic.Control.CallSub(Unload)
+Function.Intrinsic.Control.EndIf
+
+
+Program.Sub.MOPEN.End
+
+Program.Sub.POReceipts.Start
+F.Intrinsic.Control.SetErrorHandler("POReceipts_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String)
+V.Local.sFileList.Declare(String)
+V.Local.sFile.Declare(String)
+V.Local.sRecords.Declare(String)
+V.Local.sValues.Declare(String)
+V.Local.sNotProcessedPath.Declare(String)
+V.Local.sProcessedPath.Declare(String)
+V.Local.sProcessedFile.Declare(String)
+V.Local.sErrorsPath.Declare(String)
+V.Local.sErrorsFile.Declare(String)
+V.Local.sIssuePath.Declare(String)
+V.Local.sIssueFile.Declare(String)
+V.Local.sIssueString.Declare(String)
+V.Local.i.Declare(Long)
+V.Local.ia.Declare(Long)
+V.Local.iRet.Declare(Long)
+V.Local.bCheck.Declare(Boolean)
+V.Local.sfilepathandname.Declare(String)
+V.Local.sparams.Declare(String)
+V.Local.snewname.Declare(String)
+V.Local.binstring.Declare(Boolean)
+V.Local.sqtyvalues.Declare(String)
+V.Local.scallwrapperpath.Declare(String)
+V.Local.bexists.Declare(Boolean)
+V.Local.sdate.Declare(String)
+V.Local.stime.Declare(String)
+V.Local.ideleteblank.Declare(Long)
+
+V.Local.stemp.Declare(String)
+V.Local.binstring.Set(False)
+
+'formats the ambient time and ambient date
+F.Intrinsic.String.Format(V.Ambient.Date,"MMDDYYYY",V.Local.sdate)
+F.Intrinsic.String.Format(V.Ambient.Time,"HHMM",V.Local.stime)
+
+'Initializing not process folder path
+F.Intrinsic.String.Build("{0}\import\not processed\PO Receipts\",V.Caller.FilesDir,V.Local.sNotProcessedPath)
+F.Intrinsic.String.Build("{0}\import\processed\PO Receipts\",V.Caller.FilesDir,V.Local.sProcessedPath)
+F.Intrinsic.String.Build("{0}\import\errors\PO Receipts\",V.Caller.FilesDir,V.Local.sErrorsPath)
+
+V.Local.sFileList.Set(V.global.sPOReceiptsList)
+
+'Get file list of all po receipts and looping through those to process in
+'F.Intrinsic.File.GetFileList(V.Local.sNotProcessedPath,V.Local.sFileList)
+F.Intrinsic.String.Split(V.Local.sFileList,":",V.Local.sFileList)
+F.Intrinsic.Control.For(V.Local.i,V.Local.sFileList.LBound,V.Local.sFileList.UBound,1)
+	V.Local.bCheck.Set(False)
+	F.Intrinsic.Control.If(V.Local.sFileList(V.Local.i),<>,"")
+		F.Intrinsic.String.Build("{0}{1}",V.Local.sNotProcessedPath,V.Local.sFileList(v.Local.i),V.Local.sFilepathandname)
+		F.Intrinsic.String.Build("{0}{1}",V.caller.FilesDir,V.Local.sFileList(v.Local.i),V.Local.scallwrapperpath)
+		
+		'this is to be sure ATS is not trying to write file at same time.
+		F.Intrinsic.File.IsFileLocked(V.Local.sFile,V.Local.bexists)
+		F.Intrinsic.Control.If(V.Local.bexists,=,False)
+
+			f.Intrinsic.String.Build("{0}\{1}",v.Caller.LocalGSSTempDir,v.Local.sFileList(v.Local.i).Trim,v.Local.sTemp)
+			F.Intrinsic.File.CopyOpenFile(V.Local.sfilepathandname,V.Local.sTemp)
+			'Getting file text, file delimited by "~"
+			F.Intrinsic.File.Exists(V.Local.sTemp,V.Local.bexists)
+			F.Intrinsic.Control.If(V.Local.bexists,=,False)
+				F.Intrinsic.Control.ExitFor(V.Local.i)
+			F.Intrinsic.Control.EndIf
+			'Getting file text, file delimited by "~"
+			F.Intrinsic.File.File2String(V.Local.sTemp,V.Local.sFile)
+			
+			'Logging file that is being processed. We have copied and such so maybe some data is being lost between the files.
+			F.Intrinsic.String.Build("{0} POReceipt: File Information For {1}{2}{3}",V.Ambient.Now,V.Local.sFileList(V.Local.i).Trim,V.Ambient.NewLine,V.Local.sFile,V.Global.sLogging)
+			F.Intrinsic.File.Append2FileNewLine(V.Global.sLoggingFile,V.Global.sLogging)			
+			
+			F.Intrinsic.File.DeleteFile(V.Local.sTemp)
+			F.Intrinsic.String.Split(V.Local.sFile,V.Ambient.NewLine,V.Local.sRecords)
+
+			'checking to see if last row is blank, sometimes it is, sometimes not from ATS
+			V.local.ideleteblank.Set(V.Local.sRecords.UBound)
+			F.Intrinsic.Control.If(V.Local.sRecords(v.Local.ideleteblank),=,"")
+				F.Intrinsic.Math.Sub(V.Local.ideleteblank,1,V.Local.ideleteblank)
+			F.Intrinsic.Control.EndIf
+
+			'Looping through inside of file
+			F.Intrinsic.Control.For(V.Local.ia,V.Local.sRecords.LBound,V.Local.ideleteblank,1)
+			'Looping through inside of file
+	'		F.Intrinsic.Control.For(V.Local.ia,V.Local.sRecords.LBound,V.Local.sRecords.UBound,1)
+				F.Intrinsic.String.Split(V.Local.sRecords(V.Local.ia),"~",V.Local.sValues)
+				'0-Purchase Order, 1-Lines, 2-bin, 3-lot, 4-heat, 5-serial, 6-date, 7-quantity, 8-cost, 22 - PackingList
+				'Checking to be sure part, qty, job, suffix, sequence and filled in
+				'if PO number not equal to blank pad it 7 chars
+				F.Intrinsic.Control.If(V.Local.sValues(0).Trim,=,"")
+					V.Local.bCheck.Set(True)
+				F.Intrinsic.Control.Else
+					F.Intrinsic.String.Lpad(V.Local.sValues(0).Trim,"0",7,V.Local.sValues(0))
+				F.Intrinsic.Control.EndIf
+	'
+				' if the po line number is not blank left pad it
+				F.Intrinsic.Control.If(V.Local.sValues(1).Trim,=,"")
+					V.Local.bCheck.Set(True)
+				F.Intrinsic.Control.Else
+					F.Intrinsic.String.Lpad(V.Local.sValues(1).Trim,"0",3,V.Local.sValues(1))
+				F.Intrinsic.Control.EndIf
+
+				F.Intrinsic.Control.If(V.Local.sValues(6).Trim,=,"")
+						V.Local.bCheck.Set(True)
+				F.Intrinsic.Control.Else
+				F.Intrinsic.Control.EndIf
+
+				F.Intrinsic.Control.If(V.Local.sValues(7).Trim,=,"")
+					V.Local.bCheck.Set(True)
+				F.Intrinsic.Control.EndIf
+				'build the string of values
+				F.Intrinsic.String.Build("{1}{0}{2}{0}{3}{0}{4}{0}{5}{0}{6}{0}{7}{0}{8}{0}{0}{0}{0}{0}{0}{0}{0}{0}{9}{0}{0}{0}{0}{0}{0}{0}",",",V.Local.sValues(0),V.Local.sValues(1),V.Local.sValues(2),V.Local.sValues(3),V.Local.sValues(4),V.Local.sValues(5),V.Local.sValues(6),V.Local.sValues(7),V.Local.sValues(8),V.Local.sValues(22),V.Local.sIssueString)
+
+				F.Intrinsic.String.Build("{0} POReceipt: Line Being Uploaded - {1}",V.Ambient.Now,V.Local.sIssueString,V.Global.sLogging)
+				F.Intrinsic.File.Append2FileNewLine(V.Global.sLoggingFile,V.Global.sLogging)
+
+				F.Intrinsic.String.Build("{0} POReceipt: Error in Data?: {1}",V.Ambient.Now,V.Local.bCheck,V.Global.sLogging)
+				F.Intrinsic.File.Append2FileNewLine(V.Global.sLoggingFile,V.Global.sLogging)	
+
+				'If failed check, move to errors folder
+				F.Intrinsic.Control.If(V.Local.bCheck,=,False)					
+					'Building file string for issue
+					F.Intrinsic.String.Build("{0}\{1}{2}{3}",V.caller.filesdir,"P",V.Caller.CompanyCode,"RCPTS.txt",V.Local.sFilepathandname)
+					F.Intrinsic.File.String2File(V.Local.sfilepathandname,V.Local.sIssueString)
+					'build the filepath and string data for the callwrapper
+					F.Intrinsic.String.Build("{0}{1}{2}!*!{3}!*!{4}","P",V.caller.companycode,"RCPTS.txt",V.Local.sIssueString,"NS",V.Local.sparams)
+					F.Intrinsic.String.Build("{0} POReceipt: Callwrapper Params - {1}",V.Ambient.Now,V.Local.sparams,V.Global.sLogging)
+					F.Intrinsic.File.Append2FileNewLine(V.Global.sLoggingFile,V.Global.sLogging)
+					F.Global.General.CallWrapperSync(6016,V.local.sparams)
+				F.Intrinsic.Control.EndIf
+			F.Intrinsic.Control.Next(V.Local.ia)
+
+			'Record in file files, moving file over to errors folder.
+			F.Intrinsic.Control.If(V.Local.bCheck,=,True)
+				F.Intrinsic.String.Build("{0} POReceipt: Moving File {1} To Errors",V.Ambient.Now,V.Local.sFileList(V.Local.i),V.Global.sLogging)
+				F.Intrinsic.File.Append2FileNewLine(V.Global.sLoggingFile,V.Global.sLogging)
+				F.Intrinsic.String.Build("{0}{1}",V.Local.sNotProcessedPath,V.Local.sFileList(v.Local.i),V.Local.sFilepathandname)
+				F.Intrinsic.String.Split(V.Local.sFileList(v.Local.i),".txt",V.Local.sErrorsFile)
+				F.Intrinsic.String.Format(V.Ambient.Time,"HHMMSS",V.Local.stime)
+				F.Intrinsic.String.Build("{0}{1}{2}{3}",V.Local.sErrorsFile(0),V.Local.sdate,V.Local.stime,".txt",V.Local.sFileList(v.Local.i))
+				F.Intrinsic.String.Build("{0}{1}",V.Local.sErrorsPath,V.Local.sFileList(v.Local.i),V.Local.sErrorsFile)
+				F.Intrinsic.File.MoveFile(V.local.sfilepathandname,V.Local.sErrorsFile,V.Local.iRet)
+			F.Intrinsic.Control.Else
+				F.Intrinsic.String.Build("{0} POReceipt: Moving File {1} To Processed",V.Ambient.Now,V.Local.sFileList(V.Local.i),V.Global.sLogging)
+				F.Intrinsic.File.Append2FileNewLine(V.Global.sLoggingFile,V.Global.sLogging)
+	'			F.Intrinsic.File.GetFileNameFromFQN(V.Local.sFileList(V.Local.i),V.Local.sProcessedFile)
+				F.Intrinsic.String.Build("{0}{1}",V.Local.sNotProcessedPath,V.Local.sFileList(v.Local.i),V.Local.sFilepathandname)
+				F.Intrinsic.String.Split(V.Local.sFileList(v.Local.i),".txt",V.Local.sProcessedFile)
+				F.Intrinsic.String.Format(V.Ambient.Time,"HHMMSS",V.Local.stime)
+				F.Intrinsic.String.Build("{0}{1}{2}{3}",V.Local.sProcessedFile(0),V.Local.sdate,V.Local.stime,".txt",V.Local.sFileList(v.Local.i))
+				F.Intrinsic.String.Build("{0}{1}",V.Local.sProcessedPath,V.Local.sFileList(v.Local.i),V.Local.sprocessedFile)
+				F.Intrinsic.File.MoveFile(V.Local.sFilepathandname,V.Local.sProcessedFile,V.Local.iRet)
+			F.Intrinsic.Control.EndIf
+
+			'see if the file exists
+			F.Intrinsic.file.Exists(V.Local.sFilepathandname,V.Local.bexists)
+			'see if the file exists, if so delete it
+			F.Intrinsic.Control.If(V.Local.bexists,=,True)
+		'		F.Intrinsic.ui.Sleep(5)
+				F.Intrinsic.File.DeleteFile(V.Local.sFilepathandname)
+			F.Intrinsic.Control.EndIf
+
+		'Above is done only if file is NOT locked
+		F.Intrinsic.Control.EndIf
+	'above is done only if filename <> ""
+	F.Intrinsic.Control.EndIf
+
+	'Check to see if watchdog has stopped program, only stops after each file so nothing is missed in between
+	F.Intrinsic.Control.CallSub(Checkifstopped)
+	F.Intrinsic.Control.If(V.Args.Status,=,"Stop")
+		F.Intrinsic.Control.End
+	F.Intrinsic.Control.Endif
+
+F.Intrinsic.Control.Next(V.Local.i)
+
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("POReceipts_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	Function.Intrinsic.String.Concat("Project: GCG_3625_Import_CMI.gas",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
+	'Log Errors
+	F.Intrinsic.Control.CallSub(Logerror,"Error",V.Local.sError)
+	F.Intrinsic.Control.CallSub(Unload)
+Function.Intrinsic.Control.EndIf
+
+
+Program.Sub.POReceipts.End
+
+Program.Sub.Read_Option.Start
+F.Intrinsic.Control.SetErrorHandler("Read_Option_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String)
+
+V.Local.iRet.Declare(Long)
+V.local.sSQL.Declare(String)
+V.Local.sVal.Declare(String)
+V.Local.sCloseFlag.Declare(String)
+V.Local.fWIPQty.Declare(Float)
+V.Local.fRemQty.Declare(Float)
+
+'our wip to fg qty that we are doing.
+'V.Local.fWIPQty.Set(V.Args.fWipQty)
+
+'read the company option for cost to use with partials, and return it to them.
+'option id is 401163, long
+'option id from selected dropwdown item index-- option that cost method needs to be apssed as.
+'1 Price
+'2 Estimate
+'3 inventory
+'4 Actual
+'5 Remaining
+'6 Alt Cost
+
+'figure out if we are closing the job or not.
+F.Intrinsic.String.Build("Select Qty_Order, Qty_Completed From V_JOB_HEader Where JOb = '{0}' ANd Suffix = '{1}' ",V.Global.sJob.Trim,V.Global.sSuffix.Trim,V.Local.sSQL)
+F.ODBC.Connection!conX.OpenLocalRecordsetRO("Rst",V.Local.sSQL)
+F.Intrinsic.Control.If(V.ODBC.conX!Rst.EOF,=,False)
+	F.Intrinsic.Math.Sub(V.ODBC.conX!Rst.FieldValFloat!Qty_Order,V.ODBC.conX!Rst.FieldValFloat!Qty_Completed,V.Local.fRemQty)
+	F.Intrinsic.Math.Sub(V.Local.fRemQty,V.Local.fWIPQty,V.Local.fRemQty)
+	F.Intrinsic.Control.If(V.local.fRemQty,<=,0)
+		V.Local.sCloseFlag.Set("Y")
+		F.Intrinsic.String.Build("{0} Read_Option: Setting Close Flag - {1}",V.Ambient.Now,V.Local.sCloseFlag,V.Global.sLogging)
+		F.Intrinsic.File.Append2FileNewLine(V.Global.sLoggingFile,V.Global.sLogging)
+	F.Intrinsic.Control.Else
+		V.Local.sCloseFlag.Set("N")
+		F.Intrinsic.String.Build("{0} Read_Option: Setting Close Flag - {1}",V.Ambient.Now,V.Local.sCloseFlag,V.Global.sLogging)
+		F.Intrinsic.File.Append2FileNewLine(V.Global.sLoggingFile,V.Global.sLogging)		
+	F.Intrinsic.Control.EndIf
+F.Intrinsic.Control.Else
+	V.Local.sCloseFlag.Set("N")
+	F.Intrinsic.String.Build("{0} Read_Option: Setting Close Flag - {1}",V.Ambient.Now,V.Local.sCloseFlag,V.Global.sLogging)
+	F.Intrinsic.File.Append2FileNewLine(V.Global.sLoggingFile,V.Global.sLogging)
+F.Intrinsic.Control.EndIf
+
+F.ODBC.conX!Rst.Close
+
+'F.Global.General.ReadOption(401163,3,4,0000,V.Local.sRet)
+'F.Global.General.ReadOption(V.Local.iiD,V.Local.iDataType,V.Local.iDefault,V.Local.sRet)
+F.ODBC.Connection!conX.OpenLocalRecordsetRO("Rst","Select F_Long From V_Op_Header Where ID = '401163' And Sequence = '0000'")
+F.Intrinsic.Control.If(V.ODBC.conX!Rst.EOF,<>,True)
+	V.Local.iRet.Set(V.ODBC.conX!Rst.FieldValFloat!F_Long)
+F.Intrinsic.Control.Else
+	F.Intrinsic.Debug.SetLA("Option ID Not Found in Op Header.")
+	'default to actual which is 4
+	V.Local.iRet.Set(4)
+F.Intrinsic.Control.EndIf
+F.ODBC.conX!Rst.close
+F.Intrinsic.Debug.SetLA("Option Long Returned: ",V.Local.iRet)
+
+F.Intrinsic.Control.SelectCase(V.Local.iRet)
+	F.Intrinsic.Control.Case(1)
+		V.Local.sVal.Set("P")
+	F.Intrinsic.Control.Case(2)
+		V.Local.sVal.Set("E")
+	F.Intrinsic.Control.Case(3)
+		V.Local.sVal.Set("I")
+	F.Intrinsic.Control.Case(4)
+		V.Local.sVal.Set("A")
+	F.Intrinsic.Control.Case(5)
+		V.Local.sVal.Set("R")
+	F.Intrinsic.Control.Case(6)
+		V.Local.sVal.Set("L")
+	F.Intrinsic.Control.CaseElse
+		F.Intrinsic.Debug.SetLA("Case Else was hit we are defaulting.")
+		V.Local.sVal.Set("A")
+F.Intrinsic.Control.EndSelect
+
+F.Intrinsic.String.Build("{0} Read_Option: Setting Cost Option - {1}",V.Ambient.Now,V.Local.sVal,V.Global.sLogging)
+F.Intrinsic.File.Append2FileNewLine(V.Global.sLoggingFile,V.Global.sLogging)
+
+F.Intrinsic.Debug.SetLA("Cost Method: ",V.Local.sVal,V.Ambient.NewLine,"Close Flag",V.Local.sCloseFlag)
+F.Intrinsic.Variable.AddRV("CostMethod",V.Local.sVal)
+F.Intrinsic.Variable.AddRV("CloseFlag",V.Local.sCloseFlag)
+
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("Read_Option_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	Function.Intrinsic.String.Concat("Project: GCG_3625_Import_CMI.gas",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
+	'Log Errors
+	F.Intrinsic.Control.CallSub(Logerror,"Error",V.Local.sError)
+	F.Intrinsic.Control.CallSub(Unload)
+Function.Intrinsic.Control.EndIf
+
+
+Program.Sub.Read_Option.End
+
+Program.Sub.Get_ToBeProcessed.Start
+F.Intrinsic.Control.SetErrorHandler("Get_ToBeProcessed_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String)
+V.Local.sDir.Declare(String)
+V.Local.sWIPFGList.Declare(String)
+V.Local.sIssueList.Declare(String)
+V.Local.bExists.Declare(Boolean)
+V.Local.sTempPORec.Declare(String)
+V.Local.sCopyTo.Declare(String)
+V.Local.sCopyFrom.Declare(String)
+V.Local.iC.Declare(Long)
+V.Local.sTempDir.Declare(String)
+
+'This sub takes a snapshot file list of all to-be-processed files at the same time before processing in Sync.
+'This is to prevent events being done on ATS files before a previous required event was not done.
+
+'WIP 2 FG
+F.Intrinsic.String.Build("{0}\import\not processed\WIPFG\",V.Caller.FilesDir,V.Local.sDir)
+F.Intrinsic.File.GetFileList(V.Local.sDir,V.Global.sWIPFGList)
+
+F.Intrinsic.String.Build("{0} Get_TBP: WIPFG File List - {1}{2}{3}",V.Ambient.Now,V.Ambient.NewLine,V.Ambient.Tab,V.Global.sWIPFGList,V.Global.sLogging)
+F.Intrinsic.File.Append2FileNewLine(V.Global.sLoggingFile,V.Global.sLogging)
+
+'Issue Material
+F.Intrinsic.String.Build("{0}\import\not processed\issue\",V.Caller.FilesDir,V.Local.sDir)
+F.Intrinsic.File.GetFileList(V.Local.sDir,V.Global.sIssueList)
+'F.Intrinsic.Variable.AddRV("sISSUELIST",V.Global.sIssueList,"sWIPFGList",V.Global.sWIPFGList)
+
+F.Intrinsic.String.Build("{0} Get_TBP: Issue Material File List - {1}{2}{3}",V.Ambient.Now,V.Ambient.NewLine,V.Ambient.Tab,V.Global.sIssueList,V.Global.sLogging)
+F.Intrinsic.File.Append2FileNewLine(V.Global.sLoggingFile,V.Global.sLogging)
+
+'Get the file list for MOPEN pass back to main
+F.Intrinsic.String.Build("{0}\import\not processed\MOPEN\",V.Caller.FilesDir,V.Local.sDir)
+F.Intrinsic.File.GetFileList(V.Local.sDir,V.Global.sMOPENlist)
+'F.Intrinsic.Variable.AddRV("sMOPEN",V.Global.sMOPENList)
+
+F.Intrinsic.String.Build("{0} Get_TBP: MOPEN File List - {1}{2}{3}",V.Ambient.Now,V.Ambient.NewLine,V.Ambient.Tab,V.Global.sMOPENList,V.Global.sLogging)
+F.Intrinsic.File.Append2FileNewLine(V.Global.sLoggingFile,V.Global.sLogging)
+
+'Get the file list for PO Receipts and pass back to main
+F.Intrinsic.String.Build("{0}\import\not processed\PO Receipts\",V.Caller.FilesDir,V.Local.sDir)
+F.Intrinsic.File.GetFileList(V.Local.sDir,V.Global.sPOReceiptsList)
+
+F.Intrinsic.String.Build("{0} Get_TBP: PO Receipts File List - {1}{2}{3}",V.Ambient.Now,V.Ambient.NewLine,V.Ambient.Tab,V.Global.sPOReceiptsList,V.Global.sLogging)
+F.Intrinsic.File.Append2FileNewLine(V.Global.sLoggingFile,V.Global.sLogging)
+
+F.Intrinsic.Control.If(V.Global.sPOReceiptsList.Trim,<>,"")
+	'Let's copy the PO Receipt files to another directory for safe keeping
+	F.Intrinsic.String.Split(V.Global.sPOReceiptsList,":",V.Local.sTempPORec)
+	
+	F.Intrinsic.String.Build("{0}\PORec",V.Caller.TempDir,V.Local.sTempDir)
+	
+	'Check to make sure the directory exists
+	f.Intrinsic.File.DirExists(V.Local.sTempDir,V.Local.bExists)
+	
+	F.Intrinsic.Control.If(V.Local.bExists,=,False)
+		F.Intrinsic.File.CreateDir(V.Local.sTempDir)
+	F.Intrinsic.Control.EndIf
+	
+	F.Intrinsic.Control.For(V.Local.iC,0,V.Local.sTempPORec.uBound,1)
+		F.Intrinsic.String.Build("{0}\{1}",V.Local.sTempDir,V.Local.sTempPORec(V.Local.iC),V.Local.sCopyTo)
+		F.Intrinsic.String.Build("{0}{1}",V.Local.sDir,V.Local.sTempPORec(V.Local.iC),V.Local.sCopyFrom)
+		 F.Intrinsic.File.CopyFile(V.Local.sCopyFrom,V.Local.sCopyTo)
+	F.Intrinsic.Control.Next(V.Local.iC)
+F.Intrinsic.Control.EndIf
+
+'F.Intrinsic.Variable.AddRV("sPOReceipts",V.Global.sPOReceiptsList)
+
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("Get_ToBeProcessed_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	Function.Intrinsic.String.Concat("Project: GCG_3625_Import_CMI.gas",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
+	'Log Errors
+	F.Intrinsic.Control.CallSub(Logerror,"Error",V.Local.sError)
+	F.Intrinsic.Control.CallSub(Unload)
+Function.Intrinsic.Control.EndIf
+
+
+Program.Sub.Get_ToBeProcessed.End
+
+program.sub.f_endimport_unload.start
+V.Global.bEnd.Set(True)
+
+program.sub.f_endimport_unload.end
+
+program.sub.cmdhide_click.start
+'Hides form with message
+V.Global.EarlyProcess.Set(True)
+
+
+
+program.sub.cmdhide_click.end
+
+Program.Sub.IsRunning.Start
+F.Intrinsic.Control.SetErrorHandler("IsRunning_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String)
+V.Local.sFile.Declare(String)
+V.Local.bExists.Declare(Boolean)
+V.Local.iPID.Declare(Long)
+V.Local.iRet.Declare(Long)
+
+V.Local.iPID.Set(V.Ambient.PID)
+
+'check to see if program is already running.
+F.Intrinsic.String.Build("{0}\3625_IMPORT",V.Caller.FilesDir,V.Local.sFile)
+F.Intrinsic.File.Exists(V.Local.sFile,V.Local.bExists)
+F.Intrinsic.Control.If(V.Local.bExists,=,False)
+	'Create Program Status file to let it know its running or not every day.
+	F.Intrinsic.File.String2File(V.Local.sFile,V.Local.iPID.String)
+	
+F.Intrinsic.Control.Else
+	'Get PID that was logged,
+	F.Intrinsic.File.File2String(V.Local.sFile,V.Local.sFile)
+	F.Intrinsic.Math.IsNumeric(V.Local.sFile.Trim,V.Local.bExists)
+	F.Intrinsic.Control.If(V.Local.bExists,=,True)
+		V.Local.iPID.Set(V.Local.sFile.Long)
+		F.Intrinsic.Task.PIDRunning(V.Local.iPID,V.Local.bExists)
+		F.Intrinsic.Control.If(V.Local.bExists,=,True)
+		
+			'Program is logged as running, Force Restart?
+			F.Intrinsic.UI.Msgbox("Global Shop Import from ATS is running Currently, Force Restart?","Force Restart?",4,V.Local.iRet)
+			F.Intrinsic.Control.If(V.Local.iRet,=,6)
+				'Force Restart
+				f.Intrinsic.Task.terminatePID(v.Local.iPID)
+				'Create Program Status file to let it know its running or not every day.
+				F.Intrinsic.String.Build("{0}\3625_IMPORT",V.Caller.FilesDir,V.Local.sFile)
+				F.Intrinsic.File.String2File(V.Local.sFile,V.Ambient.PID)
+			F.Intrinsic.Control.Else
+				'End if they answer no
+				F.Intrinsic.Control.End
+			F.Intrinsic.Control.EndIf
+		F.Intrinsic.Control.Else
+			'Create Program Status file to let it know its running or not every day.
+			F.Intrinsic.String.Build("{0}\3625_IMPORT",V.Caller.FilesDir,V.Local.sFile)
+			F.Intrinsic.File.String2File(V.Local.sFile,V.Ambient.PID)
+		F.Intrinsic.Control.endif
+
+	F.Intrinsic.Control.EndIf
+
+F.Intrinsic.Control.EndIf
+
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("IsRunning_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	Function.Intrinsic.String.Concat("Project: GCG_3625_Import_CMI.gas",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
+	'Log Errors
+	F.Intrinsic.Control.CallSub(Logerror,"Error",V.Local.sError)
+	F.Intrinsic.Control.CallSub(Unload)
+Function.Intrinsic.Control.EndIf
+
+
+Program.Sub.IsRunning.End
+
+Program.Sub.CheckIfStopped.Start
+F.Intrinsic.Control.SetErrorHandler("CheckIfStopped_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String)
+'Sub is to check if file was deleted by watch dog. this is done in between files processed so it does not stop mid-stream
+
+V.Local.sFile.Declare(String)
+V.Local.bExists.Declare(Boolean)
+
+F.Intrinsic.String.Build("{0}\3625_IMPORT",V.Caller.FilesDir,V.Local.sFile)
+F.Intrinsic.File.Exists(V.Local.sFile,V.Local.bExists)
+F.Intrinsic.Control.If(V.Local.bExists,=,False)
+	F.Intrinsic.Variable.AddRV("Status","Stop")
+F.Intrinsic.Control.Else
+	F.Intrinsic.Variable.AddRV("Status","Cont")
+F.Intrinsic.Control.EndIf
+
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("CheckIfStopped_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	Function.Intrinsic.String.Concat("Project: GCG_3625_Import_CMI.gas",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
+	'Log Errors
+	F.Intrinsic.Control.CallSub(Logerror,"Error",V.Local.sError)
+	F.Intrinsic.Control.CallSub(Unload)
+Function.Intrinsic.Control.EndIf
+
+
+Program.Sub.CheckIfStopped.End
+
+Program.Sub.LogError.Start
+F.Intrinsic.Control.SetErrorHandler("LogError_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String)
+V.Local.sFile.Declare(String)
+V.Local.bCheck.Declare(Boolean)
+
+	'Log Program Ending On Error.
+	F.Intrinsic.String.Build("{0}\3625_IMPORT_ERRORS",V.Caller.FilesDir,V.Local.sFile)
+	F.Intrinsic.File.Exists(V.Local.sFile,V.Local.bCheck)
+	'Log Error Date
+	F.Intrinsic.Control.If(V.Local.bCheck,=,False)
+		F.Intrinsic.File.String2File(V.Local.sFile,V.Ambient.Date)
+	F.Intrinsic.Control.Else
+		F.Intrinsic.File.Append2FileNewLine(V.Local.sFile,V.Ambient.Date)
+	F.Intrinsic.Control.EndIf
+	'Log Error in args
+	F.Intrinsic.File.Append2FileNewLine(V.Local.sFile,V.Args.Error)
+
+	F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("LogError_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	Function.Intrinsic.String.Concat("Project: GCG_3625_Import_CMI.gas",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
+	'Log Program Ending On Error.
+	F.Intrinsic.String.Build("{0}\3625_IMPORT_ERRORS",V.Caller.FilesDir,V.Local.sFile)
+	F.Intrinsic.File.Exists(V.Local.sFile,V.Local.bCheck)
+	'Log Error Date
+	F.Intrinsic.Control.If(V.Local.bCheck,=,False)
+		F.Intrinsic.File.String2File(V.Local.sFile,V.Ambient.Date)
+	F.Intrinsic.Control.Else
+		F.Intrinsic.File.Append2FileNewLine(V.Local.sFile,V.Ambient.Date)
+	F.Intrinsic.Control.EndIf
+	'Log Error in args
+	F.Intrinsic.File.Append2FileNewLine(V.Local.sFile,V.Local.sError)
+	F.Intrinsic.Control.CallSub(Unload)
+Function.Intrinsic.Control.EndIf
+
+
+Program.Sub.LogError.End
+
+Program.Sub.TempFileCleanup.Start
+F.Intrinsic.Control.SetErrorHandler("TempFileCleanup_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String)
+V.Local.sFile.Declare(String)
+V.Local.sFileList.Declare(String)
+V.Local.bExists.Declare(Boolean)
+
+V.Local.sFileList.Set(V.System.Temp)
+F.Intrinsic.String.Build("{0}\*.ret*",V.Local.sFileList,V.Local.sFileList)
+
+F.Intrinsic.File.GetFileList(V.Local.sFileList,32,V.Local.sFileList)
+
+
+
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("TempFileCleanup_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	Function.Intrinsic.String.Concat("Project: GCG_3625_Import_CMI.gas",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+Function.Intrinsic.Control.EndIf
+
+
+Program.Sub.TempFileCleanup.End
+
+Program.Sub.Comments.Start
+${$0$}$GCG_3625_Import$}$WAW$}$2/26/2016
+${$3$}$0$}$$}$-1$}$-1$}$$}$1/1/1900$}$This program imports files from ATS system into Global shop.
+
+Runs on task scheduler starts daily at 12am and ends 1130pm
+
+Other Programs
+GCG_3625_Export_CMI - Exports file sto ATS from GSS
+Run File = global Files 3625_EXPORT - to keep track of PID and if program is running so it does not run again.
+
+Error Logging.
+Global\Files\3625_IMPORT_ERRORS
+Global\Files\3625_EXPORT_ERRORS
+
+'Watchdog Program controls programs manually from server and also runs auto on online update to see if programs errorored out so they can start again.
+GCG_3625_ProgramWatchDog.gas on hook 38120
+
+Program.Sub.Comments.End
+
